@@ -10,3 +10,35 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+/* Default button styles */
+.button-56 {
+    background-color: #fee6e3;
+    border: 2px solid #111;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 18px;
+    text-decoration: none;
+    color: #111;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+  
+  /* Active button styles */
+  .button-56.active {
+    background-color: #ffc107;
+    color: #fff;
+  }
+  
+  /* Button container */
+  .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+  }
+
+    .button-56.active {
+    background-color: green;
+    outline: 0;
+  }

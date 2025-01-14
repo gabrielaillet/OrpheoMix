@@ -10,3 +10,29 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+.header{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: flex-between;
+    margin: 10px;
+    height: 112px; /* Increased height */
+
+}
+
+.buttonHeader{
+    background-color: #fee6e3;
+    border: 2px solid #111;
+    border-radius: 8px;
+    color: #111;
+    font-family: Inter, sans-serif;
+    font-size: 56px; /* Increased font size */
+    height: 112px; /* Increased height */
+    justify-content: center;
+    max-width: 100%;
+    text-align: center;
+    text-decoration: none;
+
+}
+

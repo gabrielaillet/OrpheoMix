@@ -40,6 +40,9 @@ const server = http.createServer((req, res) => {
     } else if (req.url === '/nextPage.css') {
         // Serve the CSS for the next page
         serveFile(res, 'nextPage/nextPage.css', 'text/css');
+    } else if (req.url === '/buttonGroup.js') {
+        // Serve the button group JavaScript file
+        serveFile(res, 'buttonGroup.js', 'application/javascript');
     } else {
         // Serve 404 for unknown routes
         res.writeHead(404, { 'Content-Type': 'text/plain' });
