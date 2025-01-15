@@ -25,6 +25,11 @@ body {
     margin-bottom: 20px;
 }
 
+.progress-container {
+    margin: 20px 0;
+    cursor: pointer;
+}
+
 .track-info {
     margin-bottom: 20px;
 }

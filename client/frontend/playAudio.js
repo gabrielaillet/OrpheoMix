@@ -9,6 +9,7 @@ const audioPlayer = document.getElementById('audioPlayer');
 const progressBar = document.getElementById('progress');
 const currentTimeDisplay = document.getElementById('currentTime');
 const totalTimeDisplay = document.getElementById('totalTime');
+const progressContainer = document.querySelector('.progress-bar');
 const next = document.getElementById('next');
 const previous = document.getElementById('previous')
 const cover = document.getElementById('cover');
@@ -85,6 +86,13 @@ previous.addEventListener('click', () => {
     const { name, cover, artist } = song
     initializeAudio(name, cover, artist)
 })
+
+progressContainer.addEventListener('click', (e) => {
+    const containerLargeur = progressContainer.offsetWidth;
+    const clickPosition = e.offsetX; 
+    const nouveauTime = (clickPosition / containerLargeur) * audioPlayer.duration;
+    audioPlayer.currentTime = nouveauTime; 
+});
 
 window.addEventListener('DOMContentLoaded', () => {
     const song = songs[index]
