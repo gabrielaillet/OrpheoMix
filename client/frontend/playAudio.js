@@ -31,6 +31,12 @@ function formatTime(seconds) {
     return `${minutes}:${secs}`;
 }
 
+/*
+const changerRoute = (name) => {
+    const url = `/song/${name}`;
+    history.pushState({ name }, '', url);
+};
+**/
 
 audioPlayer.addEventListener('loadedmetadata', () => {
     totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
@@ -41,6 +47,7 @@ const initializeAudio = (song, album, name) => {
     cover.src = `${album}`
     title.innerHTML = song
     artist.innerHTML = name
+    //changerRoute(name);
     audioPlayer.addEventListener('loadedmetadata', () => {
       totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
     });
@@ -67,6 +74,15 @@ audioPlayer.addEventListener('ended', () => {
     playPauseButton.innerHTML = '&#9654;'; 
     progressBar.style.width = '0%'; 
     currentTimeDisplay.textContent = '0:00';
+    ++index 
+    index = index % (songs.length)
+    const song = songs[index]
+    const { name, cover, artist } = song
+    initializeAudio(name, cover, artist)
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+        playPauseButton.innerHTML = '&#10074;&#10074;'; 
+    }
 });
 
 next.addEventListener('click', () => {
