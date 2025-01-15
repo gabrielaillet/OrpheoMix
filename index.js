@@ -47,6 +47,20 @@ const server = http.createServer((req, res) => {
     }
 });
 
+
+
+///// Handle the cache
+
+// Register the file service-worker.js, if available in the navigator
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+        .then(() => console.log('Service Worker saved successfully.'))
+        .catch((error) => console.error('Service Worker saving failed:', error));
+}
+
+//////
+
+
 // Start the server
 server.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
