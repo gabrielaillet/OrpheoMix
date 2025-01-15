@@ -1,6 +1,7 @@
 const playPauseButton = document.getElementById('playPauseButton');
         const audioPlayer = document.getElementById('audioPlayer');
         const progressBar = document.getElementById('progress');
+        const progressContainer = document.querySelector('.progress-bar');
         const currentTimeDisplay = document.getElementById('currentTime');
         const totalTimeDisplay = document.getElementById('totalTime');
 
@@ -9,8 +10,8 @@ const playPauseButton = document.getElementById('playPauseButton');
             const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
             return `${minutes}:${secs}`;
         }
-
         audioPlayer.addEventListener('loadedmetadata', () => {
+            console.log("hello world")
             totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
         });
 
@@ -35,3 +36,16 @@ const playPauseButton = document.getElementById('playPauseButton');
             progressBar.style.width = '0%'; 
             currentTimeDisplay.textContent = '0:00';
         });
+
+
+        progressContainer.addEventListener('click', (e) => {
+            const containerLargeur = progressContainer.offsetWidth;
+            const clickPosition = e.offsetX; 
+            const nouveauTime = (clickPosition / containerLargeur) * audioPlayer.duration;
+            audioPlayer.currentTime = nouveauTime; 
+        });
+        
+
+
+
+        
