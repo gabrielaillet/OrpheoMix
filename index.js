@@ -1,6 +1,11 @@
-const http = require("http");
-const fs = require("fs");
-const path = require("path");
+import http from "http";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Détermine le chemin absolu du fichier courant
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Define the port
 const PORT = 3000;
@@ -46,7 +51,7 @@ const server = http.createServer((req, res) => {
   else if (req.url === "/firstpage.html") {
     // Serve the first page
     serveFile(res, "/html/firstPage.html", "text/html");
-    
+
   } else if (req.url === "/nextpage.html") {
     // Serve the next page
     serveFile(res, "/html/nextPage.html", "text/html");
