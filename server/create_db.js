@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 
-const db = new sqlite3.Database('db/music.db', (err) => {
+const db = new sqlite3.Database('db/music2.db', (err) => {
   if (err) {
     console.error('Error opening database:', err.message);
   } else {
@@ -12,6 +12,7 @@ db.run(`
   CREATE TABLE IF NOT EXISTS tracks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
+    cover BLOB,
     artist TEXT,
     audio BLOB
   )
