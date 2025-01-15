@@ -93,7 +93,7 @@ body {
   }
   
   .button-56.active {
-    background-color: green; /* Set the background color to green when the button has the 'active' class */
+    background-color: #8db9a5; /* Set the background color to green when the button has the 'active' class */
     color: white; /* Optional: change text color when active */
 }
 .movable-container {
