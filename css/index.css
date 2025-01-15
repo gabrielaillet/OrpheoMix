@@ -21,10 +21,6 @@ a:hover {
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
     background-color: #FFF5EE;
 }
@@ -99,4 +95,15 @@ body {
   .button-56.active {
     background-color: green; /* Set the background color to green when the button has the 'active' class */
     color: white; /* Optional: change text color when active */
+}
+.movable-container {
+  position: absolute; /* Directly positions it relative to the viewport */
+  width: 100%; /* Full width of the viewport */
+  top: 50%; /* Starts in the middle of the viewport */
+  left: 0; /* Aligns to the left edge */
+  transition: top 0.8s ease-in-out; /* Smooth transition when top changes */
+}
+
+.movable-container.move-to-top {
+  top: 0; /* Moves the container to the very top of the viewport */
 }
