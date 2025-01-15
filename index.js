@@ -46,6 +46,7 @@ const server = http.createServer((req, res) => {
   else if (req.url === "/firstpage.html") {
     // Serve the first page
     serveFile(res, "/html/firstPage.html", "text/html");
+    
   } else if (req.url === "/nextpage.html") {
     // Serve the next page
     serveFile(res, "/html/nextPage.html", "text/html");
