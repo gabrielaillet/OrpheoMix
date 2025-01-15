@@ -1,4 +1,8 @@
-musicName = "test"
+const songs = [ 
+    { name : "test", cover : "cover.jpeg", artist : "Suna" },
+    { name : "danger", cover : "album1.jpg", artist : "Internet" },
+    { name : "psytrance-loop", cover : "album2.jpg", artist : "Internet2" }
+]
 
 const playPauseButton = document.getElementById('playPauseButton');
 const audioPlayer = document.getElementById('audioPlayer');
@@ -6,9 +10,19 @@ const progressBar = document.getElementById('progress');
 const currentTimeDisplay = document.getElementById('currentTime');
 const totalTimeDisplay = document.getElementById('totalTime');
 const next = document.getElementById('next');
+const previous = document.getElementById('previous')
 const cover = document.getElementById('cover');
 const title = document.getElementById('title')
 const artist = document.getElementById('artist')
+
+var index = 0
+for (let i = 0; i < songs.length; i++ ) {
+    if (title == songs[i].name) {
+        index = i
+        break
+    } 
+}
+console.log(index)
 
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
@@ -54,8 +68,26 @@ audioPlayer.addEventListener('ended', () => {
     currentTimeDisplay.textContent = '0:00';
 });
 
-next.addEventListener('click', () => initializeAudio("test", "cover.jpeg", "Suna"))
+next.addEventListener('click', () => {
+    ++index 
+    index = index % (songs.length)
+    const song = songs[index]
+    const { name, cover, artist } = song
+    initializeAudio(name, cover, artist)
+})
+previous.addEventListener('click', () => {
+    --index 
+    index = index % (songs.length)
+    if (index < 0) {
+        index = songs.length - 1
+    }
+    const song = songs[index]
+    const { name, cover, artist } = song
+    initializeAudio(name, cover, artist)
+})
 
 window.addEventListener('DOMContentLoaded', () => {
-    initializeAudio('danger', 'album1.jpg', 'Internet'); // Replace with your song name
+    const song = songs[index]
+    const { name, cover, artist } = song 
+    initializeAudio(name, cover, artist)
 });
