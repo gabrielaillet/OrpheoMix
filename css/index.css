@@ -1,0 +1,109 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f8f9fa;
+}
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+.button {
+    height: 5%;
+    width: 25%;
+    border-color: gray;
+    border-style: solid;    
+    border-width: 1;
+    border-radius: 10px;
+}
+
+body {
+    height: 100vh;
+    background-color: #FFF5EE;
+}
+.btn-group {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+.btn {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+}
+
+.button-56 {
+    align-items: center;
+    background-color: #fee6e3;
+    border: 2px solid #111;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #111;
+    cursor: pointer;
+    display: flex;
+    font-family: Inter, sans-serif;
+    font-size: 56px; /* Increased font size */
+    height: 140px; /* Increased height */
+    justify-content: center;
+    line-height: 64px; /* Adjusted line height to match the new height */
+    max-width: 100%;
+    padding: 0 72px; /* Increased padding for larger button */
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  
+  .button-56:after {
+    background-color: #111;
+    border-radius: 8px;
+    content: "";
+    display: block;
+    height: 140px; /* Increased height */
+    left: 0;
+    width: 100%;
+    position: absolute;
+    top: -2px;
+    transform: translate(8px, 8px);
+    transition: transform .2s ease-out;
+    z-index: -1;
+  }
+  
+  .button-56:hover:after {
+    transform: translate(0, 0);
+  }
+  
+  .button-56:active {
+    background-color: #fee6e3;
+    outline: 0;
+  }
+  
+  .button-56:hover {
+    outline: 0;
+  }
+  
+  @media (min-width: 768px) {
+    .button-56 {
+      padding: 0 60px; /* Further increase padding for larger screens */
+    }
+  }
+  
+  .button-56.active {
+    background-color: #8db9a5; /* Set the background color to green when the button has the 'active' class */
+    color: white; /* Optional: change text color when active */
+}
+.movable-container {
+  position: absolute; /* Directly positions it relative to the viewport */
+  width: 100%; /* Full width of the viewport */
+  top: 50%; /* Starts in the middle of the viewport */
+  left: 0; /* Aligns to the left edge */
+  transition: top 0.8s ease-in-out; /* Smooth transition when top changes */
+}
+
+.movable-container.move-to-top {
+  top: 0; /* Moves the container to the very top of the viewport */
+}

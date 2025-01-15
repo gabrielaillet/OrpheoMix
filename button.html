@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ce1095, #7597de);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .music-player {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            width: 400px;
+        }
+
+        .music-player img {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .track-info {
+            margin-bottom: 20px;
+        }
+
+        .track-info h2 {
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        .track-info p {
+            font-size: 1em;
+            margin: 5px 0 0;
+            color: #aaa;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .controls button {
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            transform: scale(1.1);
+            background: #ff5722;
+            color: #fff;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 5px;
+            background: #555;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            width: 0%;
+            background: #ff5722;
+            border-radius: 50px;
+            transition: width 0.1s linear;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="music-player">
+        <img src="cover.jpeg" alt="Album Cover">
+        <div class="track-info">
+            <h2>Song Title</h2>
+            <p>Artist Name</p>
+        </div>
+        <div class="progress-container">
+            <div class="time-info">
+                <span id="currentTime">0:00</span>
+                <span id="totalTime">0:00</span>
+            </div>
+            <div class="progress-bar">
+                <span id="progress"></span>
+            </div>
+        </div>
+        <div class="controls">
+            <button>&#9664;&#9664;</button>
+            <button id="playPauseButton">&#9654;</button>
+            <button>&#9654;&#9654;</button>
+        </div>
+    </div>
+    <audio id="audioPlayer" src="test.mp3"></audio>
+
+    <script>
+        const playPauseButton = document.getElementById('playPauseButton');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const progressBar = document.getElementById('progress');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const totalTimeDisplay = document.getElementById('totalTime');
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+            return `${minutes}:${secs}`;
+        }
+
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+        });
+
+        playPauseButton.addEventListener('click', () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playPauseButton.innerHTML = '&#10074;&#10074;'; 
+            } else {
+                audioPlayer.pause();
+                playPauseButton.innerHTML = '&#9654;'; 
+            }
+        });
+
+        audioPlayer.addEventListener('timeupdate', () => {
+            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            progressBar.style.width = `${progress}%`;
+            currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
+        });
+
+        audioPlayer.addEventListener('ended', () => {
+            playPauseButton.innerHTML = '&#9654;'; 
+            progressBar.style.width = '0%'; 
+            currentTimeDisplay.textContent = '0:00';
+        });
+    </script>
+</body>
+</html>
