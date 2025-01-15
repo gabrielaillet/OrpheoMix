@@ -17,6 +17,15 @@
 //      -- if the cache is full, musics the user listened to the 
 //         longest time ago are deleted from the cache until there 
 //         is enough space
+//      -- 
+//      Chaque musique est identifiée par une URL unique, par exemple : https://yourapi.com/getmusic?id=1234.
+//      L’ensemble complet des données (audio, image, métadonnées) est encapsulé dans un objet JSON et enregistré dans le cache
+//      ex of entry: 
+//      {
+//          "metadata": { "title": "Song Name", "artist": "Artist Name", "album": "Album Name", "duration": 300 },
+//          "audio": "Blob",
+//          "cover": "Blob"
+//      }
 
 
 // caches names
