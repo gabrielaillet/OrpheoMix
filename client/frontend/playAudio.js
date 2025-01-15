@@ -36,7 +36,7 @@ const changerRoute = (name) => {
     const url = `/song/${name}`;
     history.pushState({ name }, '', url);
 };
-**/
+*/
 
 audioPlayer.addEventListener('loadedmetadata', () => {
     totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
@@ -64,6 +64,18 @@ playPauseButton.addEventListener('click', () => {
     }
 });
 
+window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.name) {
+        const song = songs.find((s) => s.name === event.state.name);
+        if (song) {
+            index = songs.indexOf(song);
+            const { name, cover, artist } = song;
+            initializeAudio(name, cover, artist);
+        }
+    }
+});
+
+
 audioPlayer.addEventListener('timeupdate', () => {
     const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
     progressBar.style.width = `${progress}%`;
@@ -86,13 +98,24 @@ audioPlayer.addEventListener('ended', () => {
 });
 
 next.addEventListener('click', () => {
+    playPauseButton.innerHTML = '&#9654;'; 
+    progressBar.style.width = '0%'; 
+    currentTimeDisplay.textContent = '0:00';
+    
     ++index 
     index = index % (songs.length)
     const song = songs[index]
     const { name, cover, artist } = song
     initializeAudio(name, cover, artist)
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+        playPauseButton.innerHTML = '&#10074;&#10074;'; 
+    }
 })
 previous.addEventListener('click', () => {
+    playPauseButton.innerHTML = '&#9654;'; 
+    progressBar.style.width = '0%'; 
+    currentTimeDisplay.textContent = '0:00';
     --index 
     index = index % (songs.length)
     if (index < 0) {
@@ -101,6 +124,10 @@ previous.addEventListener('click', () => {
     const song = songs[index]
     const { name, cover, artist } = song
     initializeAudio(name, cover, artist)
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+        playPauseButton.innerHTML = '&#10074;&#10074;'; 
+    }
 })
 
 progressContainer.addEventListener('click', (e) => {
