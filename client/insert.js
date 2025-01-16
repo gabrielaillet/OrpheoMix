@@ -34,4 +34,8 @@ for (let song of songs) {
   insertMP3(song.name, song.cover, song.artist, song.genre, song.filePath);
 }
 
+
+
+
+// Close the database connection
 db.close();
