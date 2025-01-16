@@ -47,7 +47,7 @@ const initializeAudio = (song, album, name) => {
     const n = index + 1;
     audioPlayer.src = `http://localhost:8000/audio/${n}`; // `song` ici représente l'ID
 
-    cover.src = `${album}`
+    cover.src = `http://localhost:8000/cover/${n}`
     title.innerHTML = song
     artist.innerHTML = name
     //changerRoute(name);
