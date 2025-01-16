@@ -12,8 +12,8 @@ function retrieveMP3(id, outputPath, outputText ) {
       if (err) {
         console.error('Error retrieving MP3 file:', err.message);
       } else if (row) {
-        fs.writeFileSync(outputPath, row.audio); // Save the binary data as a file
-        fs.writeFileSync(outputText, row.title); // Save the binary data as a file
+        fs.writeFileSync(outputPath, row.audio);
+        fs.writeFileSync(outputText, row.title);
         console.log(`MP3 file saved to: ${outputPath}`);
       } else {
         console.log('No track found with the given ID.');
