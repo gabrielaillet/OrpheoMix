@@ -19,6 +19,17 @@ function retrieveAll(callback) {
   });
 }
 
+function retrieveText(callback) {
+  db.all(`SELECT id, title, artist FROM tracks`, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      callback(err, null);
+    } else {
+      callback(null, rows);
+    }
+  });
+}
+
 function retrieveByGenre(genre, callback) {
   db.get(
     `SELECT id, title FROM tracks WHERE genre = ?`,
@@ -64,7 +75,17 @@ app.get('/db', (req, res) => {
     if (err) {
       res.status(500).send('Error retrieving data');
     } else {
-      res.json(data); // Send data as JSON
+      res.json(data);
+    }
+  });
+});
+
+app.get('/songs', (req, res) => {
+  retrieveText((err, data) => {
+    if (err) {
+      res.status(500).send('Error retrieving data');
+    } else {
+      res.json(data);
     }
   });
 });
@@ -141,7 +162,6 @@ app.get('/cover/:trackId', (req, res) => {
           // Envoie le fichier BLOB au client avec le bon type MIME
           res.setHeader('Content-Type', 'image/jpg'); // Type MIME pour une image JPEG ou JPG
           res.send(row.cover); // Envoie le BLOB de l'image
-          console.log("row.cover", row.cover)
       }
   });
 });

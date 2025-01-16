@@ -1,7 +1,7 @@
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 
-const db = new sqlite3.Database('../server/db/music2.db');
+const db = new sqlite3.Database('../server/db/music1.db');
 
 // Function to insert an MP3 file
 function insertMP3(title, cover, artist, genre, filePath) {
@@ -27,7 +27,6 @@ const songs = [
   { name : "test", cover : "cover.jpeg", artist : "Suna" , genre : "AI Music" ,  filePath : "frontend/test.mp3" },
   { name : "danger", cover : "album1.jpg", artist : "Internet", genre : "POP" , filePath : "frontend/danger.mp3" },
   { name : "psytrance-loop", cover : "album2.jpg", artist : "Internet2", genre : "Classical" , filePath : "frontend/psytrance-loop.mp3"},
-  
 ]
 
 for (let song of songs) {
