@@ -67,8 +67,8 @@ app.post('/signup', (req, res) => {
     }
 
     // Check if the user already exists
-    const checkQuery = `SELECT * FROM users WHERE pseudo = ? AND password = ?`;
-    db.get(checkQuery, [pseudo, password], (err, row) => {
+    const checkQuery = `SELECT * FROM users WHERE pseudo = ? `;
+    db.get(checkQuery, [pseudo], (err, row) => {
         if (err) {
             console.error('Error checking user existence:', err.message);
             return res.status(500).send('Error checking user existence.');
@@ -76,7 +76,7 @@ app.post('/signup', (req, res) => {
 
         if (row) {
             // If the user already exists
-            return res.status(400).send('You already have an account, you can directly log in.');
+            return res.status(400).send('This pseudo is already taken, use a different one please.');
         }
 
         // If the user does not exist, insert the credentialsinto the database 
@@ -94,26 +94,25 @@ app.post('/signup', (req, res) => {
 
 // Log in route
 app.post('/login', (req, res) => {
-    //const { pseudo, password } = req.body;
-    const { password } = req.body;
+    const { pseudo, password } = req.body;
+    //const { password } = req.body;
 
-    //if (!pseudo || !password) {
-        if (!password) {
-        return res.status(400).send('password is required.');
+    if (!pseudo || !password) {
+        return res.status(400).send('pseudo and password are required.');
     }
 
-    const query = `SELECT * FROM users WHERE password = ?`;
-    db.get(query, [password], (err, row) => {
+    const query = `SELECT * FROM users WHERE pseudo = ? AND password = ?`;
+    db.get(query, [pseudo, password], (err, row) => {
         if (err) {
             console.error('Error querying database:', err.message);
             return res.status(500).send('Error logging in.');
         }
 
         if (!row) {
-            return res.status(401).send('Invalid password. Try again or sign up if you do not have an account');
+            return res.status(401).send('Invalid password or pseudo. Try again or sign up if you do not have an account');
         }
 
-        console.log("User authenticated, redirecting to index.html");
+        console.log("User authentificated, redirecting to index.html");
         // if authentification succeeded, redirect to index page
         res.redirect('http://localhost:3000/index.html');
         

@@ -19,7 +19,7 @@ document.getElementById('signupForm').addEventListener('submit', async (event) =
 document.getElementById('loginForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    //const pseudo = document.getElementById('pseudoLogin').value;
+    const pseudo = document.getElementById('pseudoLogin').value;
     const password = document.getElementById('passwordLogin').value;
 
     fetch('/login', {
@@ -27,8 +27,8 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         headers: {
             'Content-Type': 'application/json'
         },
-        //body: JSON.stringify({ pseudo, password })
-        body: JSON.stringify({ password})
+        body: JSON.stringify({ pseudo, password }),
+        //body: JSON.stringify({ password})
     })
     .then(response => {
         if (response.ok) {
