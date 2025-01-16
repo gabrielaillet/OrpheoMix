@@ -19,6 +19,17 @@ function retrieveAll(callback) {
   });
 }
 
+function retrieveText(callback) {
+  db.all(`SELECT id, title, artist FROM tracks`, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      callback(err, null);
+    } else {
+      callback(null, rows);
+    }
+  });
+}
+
 function retrieveById(id, callback) {
   db.get(
     `SELECT id, title, audio FROM tracks WHERE id = ?`,
@@ -46,7 +57,17 @@ app.get('/db', (req, res) => {
     if (err) {
       res.status(500).send('Error retrieving data');
     } else {
-      res.json(data); // Send data as JSON
+      res.json(data);
+    }
+  });
+});
+
+app.get('/songs', (req, res) => {
+  retrieveText((err, data) => {
+    if (err) {
+      res.status(500).send('Error retrieving data');
+    } else {
+      res.json(data);
     }
   });
 });

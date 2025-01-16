@@ -24,7 +24,6 @@ for (let i = 0; i < songs.length; i++ ) {
         break
     } 
 }
-console.log(index)
 
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
@@ -50,7 +49,6 @@ const initializeAudio = (song, album, name) => {
     cover.src = `${album}`
     title.innerHTML = song
     artist.innerHTML = name
-    //changerRoute(name);
     audioPlayer.addEventListener('loadedmetadata', () => {
       totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
     });
