@@ -20,7 +20,7 @@ function createButtonGroup(containerId, buttons, activeIndex) {
   const buttonGroupRow = document.createElement("div");
   buttonGroupRow.classList.add("row");
 
-  buttonGroup.classList.add("container-fluid","fixed-top");
+  buttonGroup.classList.add("container-fluid");
 
   // Generate buttons
   buttons.forEach((button, index) => {
