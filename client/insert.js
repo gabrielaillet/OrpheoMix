@@ -5,7 +5,7 @@ const db = new sqlite3.Database('../server/db/music2.db');
 
 // Function to insert an MP3 file
 function insertMP3(title, cover, artist, filePath) {
-  const audioData = fs.readFileSync(filePath);
+  const audioData = fs.readFileSync(filePath); // Read the MP3 file as binary data
 
   db.run(
     `INSERT INTO tracks (title, cover, artist, audio) VALUES (?, ?, ?, ?)`,
@@ -33,4 +33,8 @@ for (let song of songs) {
   insertMP3(song.name, song.cover, song.artist, song.filePath);
 }
 
+
+
+
+// Close the database connection
 db.close();

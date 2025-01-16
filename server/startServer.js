@@ -5,7 +5,7 @@ const app = express();
 const port = 8000;
 
 app.use(cors());
-const db = new sqlite3.Database('db/music2.db');
+const db = new sqlite3.Database('db/music1.db');
 
 // Function to retrieve all tracks from the database
 function retrieveAll(callback) {
@@ -112,6 +112,28 @@ app.get('/audio/:trackId', (req, res) => {
         }
     });
 });
+
+app.get('/cover/:trackId', (req, res) => {
+  const trackId = req.params.trackId; // Récupère l'ID de la piste
+
+  // Récupérer le fichier image BLOB depuis la base de données
+  db.get('SELECT cover FROM tracks WHERE id = ?', [trackId], (err, row) => {
+      if (err) {
+          res.status(500).send('Erreur lors de la récupération de l\'image.');
+          console.error(err);
+      } else if (!row) {
+          res.status(404).send('Aucune piste trouvée avec cet ID.');
+      } else {
+          // Envoie le fichier BLOB au client avec le bon type MIME
+          res.setHeader('Content-Type', 'image/jpg'); // Type MIME pour une image JPEG ou JPG
+          res.send(row.cover); // Envoie le BLOB de l'image
+          console.log("row.cover", row.cover)
+      }
+  });
+});
+
+
+
 app.listen(port, () => {
   console.log('Server app listening on port ' + port);
 });
