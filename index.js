@@ -41,7 +41,9 @@ app.use(express.static(path.join(__dirname, 'authentificationPage', 'page')));
 app.get('/index.html', (req, res) => {
     serveFile(res, 'index.html', 'text/html');
 });
-
+app.get('/index.css', (req, res) => {
+    serveFile(res, 'index.css', 'text/css');
+});
 // Routes for the 3 pages 
 app.get('/firstpage.html', (req, res) => {
     serveFile(res, 'firstPage/firstPage.html', 'text/html');
@@ -92,21 +94,23 @@ app.post('/signup', (req, res) => {
 
 // Log in route
 app.post('/login', (req, res) => {
-    const { pseudo, password } = req.body;
+    //const { pseudo, password } = req.body;
+    const { password } = req.body;
 
-    if (!pseudo || !password) {
-        return res.status(400).send('Pseudo and password are required.');
+    //if (!pseudo || !password) {
+        if (!password) {
+        return res.status(400).send('password is required.');
     }
 
-    const query = `SELECT * FROM users WHERE pseudo = ? AND password = ?`;
-    db.get(query, [pseudo, password], (err, row) => {
+    const query = `SELECT * FROM users WHERE password = ?`;
+    db.get(query, [password], (err, row) => {
         if (err) {
             console.error('Error querying database:', err.message);
             return res.status(500).send('Error logging in.');
         }
 
         if (!row) {
-            return res.status(401).send('Invalid pseudo or password. Try again or sign up if you do not have an account');
+            return res.status(401).send('Invalid password. Try again or sign up if you do not have an account');
         }
 
         console.log("User authenticated, redirecting to index.html");
