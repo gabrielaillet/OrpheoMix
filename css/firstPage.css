@@ -21,6 +21,17 @@ a:hover {
 
 }
 
+.profile-picture {
+    width: 150px; /* Largeur fixe */
+    height: 150px; /* Hauteur fixe pour que ce soit un carré */
+    border-radius: 50%; /* Rendre l'élément circulaire */
+    border: 2px solid #111; /* Ajouter une bordure */
+    display: flex; /* Centrer le contenu */
+    justify-content: center; /* Centrer horizontalement */
+    align-items: center; /* Centrer verticalement */
+    background-color: #f0f0f0; /* Facultatif : couleur de fond */
+}
+
 .buttonHeader{
     background-color: #fee6e3;
     border: 2px solid #111;

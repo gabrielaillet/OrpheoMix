@@ -4,27 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>firstpage</title>
-    <link
-    href="/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/index.css" />
   </head>
   <body>
     <div id="button-container"></div>
-  
+    <div class="container" style="margin-top: 20px">
+      <div class="row">
+        <div class="col profile-picture">
+          <img src="/assets/images.jpeg" alt="Profile"  style="width: 300px;height: 300px;"/>
+        </div>
+        <div class="col"><div class="col profile-picture">
+          <img src="/assets/womenprofile.png" alt="Profile" style="width: 300px;height: 300px;"/>
+        </div></div>
+        <div class="col"><div class="col profile-picture">
+          <img src="/assets/images.jpeg" alt="Profile"  style="width: 300px;height: 300px;" />
+        </div></div>
+      </div>
+    </div>
+
     <script src="/js/buttonGroup.js"></script>
     <script>
-      // Call the function after the script is loaded
-      const buttons = [
-        { label: "Artistes", href: "/firstpage.html" },
-        { label: "Sons", href: "/nextpage.html" },
-        { label: "Mes Playlists", href: "/index.html" },
-      ];
+     
       createButtonGroup("button-container", buttons, 0); // Active index is 1
     </script>
-        <script src="/js/bootstrap.bundle.min.js"></script>
-
+    <script src="/js/bootstrap.bundle.min.js"></script>
   </body>
-
 </html>
