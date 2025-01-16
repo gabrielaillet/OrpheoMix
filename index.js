@@ -41,10 +41,16 @@ const server = http.createServer((req, res) => {
   } else if (req.url === "/css/nextPage.css") {
     // Serve the CSS for the next page
     serveFile(res, "/css/nextPage.css", "text/css");
+  } else if (req.url === "/css/artistPage.css") {
+    // Serve the CSS for the artist page
+    serveFile(res, "css/artistPage.css", "text/css");
   } else if (req.url === "/css/bootstrap.min.css") {
     // Serve the CSS for the next page
     serveFile(res, "/css/bootstrap.min.css", "text/css");
-  } 
+  } else if (req.url === "/cover.jpeg") {
+    // Serve the cover image
+    serveFile(res, "cover.jpeg", "image/jpeg");
+  }
   
   
   
@@ -55,6 +61,9 @@ const server = http.createServer((req, res) => {
   } else if (req.url === "/nextpage.html") {
     // Serve the next page
     serveFile(res, "/html/nextPage.html", "text/html");
+  } else if (req.url === "/artistpage.html") {
+    // Serve the artist page
+    serveFile(res, "/html/artistPage.html", "text/html");
   }
   else if (req.url === "/js/buttonGroup.js") {
     // Serve the button group JavaScript file
