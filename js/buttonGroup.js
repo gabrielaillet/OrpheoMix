@@ -7,8 +7,8 @@
 function createButtonGroup(containerId, activeIndex) {
    // Call the function after the script is loaded
    const buttons = [
-    { label: "Artistes", href: "/firstpage.html" },
-    { label: "Sons", href: "/nextpage.html" },
+    { label: "Artistes", href: "/firstPage.html" },
+    { label: "Sons", href: "/nextPage.html" },
     { label: "Mes Playlists", href: "/index.html" },
   ];
   const container = document.getElementById(containerId);

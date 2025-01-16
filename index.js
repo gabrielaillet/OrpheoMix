@@ -42,7 +42,7 @@ const server = http.createServer((req, res) => {
   } else if (req.url === "/css/bootstrap.min.css") {
     // Serve the CSS for the next page
     serveFile(res, "/css/bootstrap.min.css", "text/css");
-  } else if (req.url === "/firstpage.html") {
+  } else if (req.url === "/firstPage.html") {
     // Serve the first page
     serveFile(res, "/html/firstPage.html", "text/html");
   } else if (req.url === "/nextpage.html") {
