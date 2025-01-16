@@ -1,145 +1,134 @@
-const songs = [
-    { id: 1, name: "test", cover: "cover.jpeg", artist: "Suna" },
-    { id: 2, name: "danger", cover: "album1.jpg", artist: "Internet" },
-    { id: 3, name: "psytrance-loop", cover: "album2.jpg", artist: "Internet2" }
-];
+let songs;
 
-
-const playPauseButton = document.getElementById('playPauseButton');
-const audioPlayer = document.getElementById('audioPlayer');
-const progressBar = document.getElementById('progress');
-const currentTimeDisplay = document.getElementById('currentTime');
-const totalTimeDisplay = document.getElementById('totalTime');
-const progressContainer = document.querySelector('.progress-bar');
-const next = document.getElementById('next');
-const previous = document.getElementById('previous')
-const cover = document.getElementById('cover');
-const title = document.getElementById('title')
-const artist = document.getElementById('artist')
-
-var index = 0
-for (let i = 0; i < songs.length; i++ ) {
-    if (title == songs[i].name) {
-        index = i
-        break
-    } 
+async function fetchSongs() {
+  try {
+    const response = await fetch('http://localhost:8000/songs');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    songs = await response.json();
+  } catch (error) {
+    console.error('There was a problem fetching the songs:', error);
+  }
 }
 
-function formatTime(seconds) {
+async function initializeApp() {
+  await fetchSongs();
+
+  if (!songs || songs.length === 0) {
+    console.error('No songs found!');
+    return;
+  }
+
+  let index = 0;
+
+  const playPauseButton = document.getElementById('playPauseButton');
+  const audioPlayer = document.getElementById('audioPlayer');
+  const progressBar = document.getElementById('progress');
+  const currentTimeDisplay = document.getElementById('currentTime');
+  const totalTimeDisplay = document.getElementById('totalTime');
+  const progressContainer = document.querySelector('.progress-bar');
+  const next = document.getElementById('next');
+  const previous = document.getElementById('previous');
+  const cover = document.getElementById('cover');
+  const title = document.getElementById('title');
+  const artist = document.getElementById('artist');
+
+  for (let i = 0; i < songs.length; i++) {
+    if (title.textContent === songs[i].name) {
+      index = i;
+      break;
+    }
+  }
+
+  function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
     return `${minutes}:${secs}`;
-}
+  }
 
-/*
-const changerRoute = (name) => {
-    const url = `/song/${name}`;
-    history.pushState({ name }, '', url);
-};
-*/
-
-audioPlayer.addEventListener('loadedmetadata', () => {
-    totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
-});
-
-const initializeAudio = (song, album, name) => {
+  const initializeAudio = (song, musician) => {
     const n = index + 1;
     audioPlayer.src = `http://localhost:8000/audio/${n}`;
-
-    cover.src = `http://localhost:8000/cover/${n}`
-    title.innerHTML = song
-    artist.innerHTML = name
+    cover.src = `http://localhost:8000/cover/${n}`;
+    title.innerHTML = song;
+    artist.innerHTML = musician;
     audioPlayer.addEventListener('loadedmetadata', () => {
       totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
     });
     audioPlayer.load();
-};
+  };
 
-playPauseButton.addEventListener('click', () => {
+  playPauseButton.addEventListener('click', () => {
     if (audioPlayer.paused) {
-        audioPlayer.play();
-        playPauseButton.innerHTML = '&#10074;&#10074;'; 
+      audioPlayer.play();
+      playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
     } else {
-        audioPlayer.pause();
-        playPauseButton.innerHTML = '&#9654;'; 
+      audioPlayer.pause();
+      playPauseButton.innerHTML = '&#9654;'; // Play icon
     }
-});
+  });
 
-window.addEventListener('popstate', (event) => {
-    if (event.state && event.state.name) {
-        const song = songs.find((s) => s.name === event.state.name);
-        if (song) {
-            index = songs.indexOf(song);
-            const { name, cover, artist } = song;
-            initializeAudio(name, cover, artist);
-        }
-    }
-});
-
-
-audioPlayer.addEventListener('timeupdate', () => {
+  audioPlayer.addEventListener('timeupdate', () => {
     const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
     progressBar.style.width = `${progress}%`;
     currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
-});
+  });
 
-audioPlayer.addEventListener('ended', () => {
-    playPauseButton.innerHTML = '&#9654;'; 
-    progressBar.style.width = '0%'; 
+  audioPlayer.addEventListener('ended', () => {
+    playPauseButton.innerHTML = '&#9654;'; // Play icon
+    progressBar.style.width = '0%';
     currentTimeDisplay.textContent = '0:00';
-    ++index 
-    index = index % (songs.length)
-    const song = songs[index]
-    const { name, cover, artist } = song
-    initializeAudio(name, cover, artist)
-    if (audioPlayer.paused) {
-        audioPlayer.play();
-        playPauseButton.innerHTML = '&#10074;&#10074;'; 
-    }
-});
+    index = (index + 1) % songs.length;
+    const song = songs[index];
+    const { name, artist: songArtist } = song;
+    initializeAudio(name, songArtist);
+    audioPlayer.play();
+    playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
+  });
 
-next.addEventListener('click', () => {
-    playPauseButton.innerHTML = '&#9654;'; 
-    progressBar.style.width = '0%'; 
-    currentTimeDisplay.textContent = '0:00';
-    
-    ++index 
-    index = index % (songs.length)
-    const song = songs[index]
-    const { name, cover, artist } = song
-    initializeAudio(name, cover, artist)
-    if (audioPlayer.paused) {
-        audioPlayer.play();
-        playPauseButton.innerHTML = '&#10074;&#10074;'; 
-    }
-})
-previous.addEventListener('click', () => {
-    playPauseButton.innerHTML = '&#9654;'; 
-    progressBar.style.width = '0%'; 
-    currentTimeDisplay.textContent = '0:00';
-    --index 
-    index = index % (songs.length)
-    if (index < 0) {
-        index = songs.length - 1
-    }
-    const song = songs[index]
-    const { name, cover, artist } = song
-    initializeAudio(name, cover, artist)
-    if (audioPlayer.paused) {
-        audioPlayer.play();
-        playPauseButton.innerHTML = '&#10074;&#10074;'; 
-    }
-})
+  next.addEventListener('click', () => {
+    index = (index + 1) % songs.length;
+    const song = songs[index];
+    const { title: name, artist: songArtist } = song;
+    initializeAudio(name, songArtist);
+    audioPlayer.play();
+    playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
+  });
 
-progressContainer.addEventListener('click', (e) => {
-    const containerLargeur = progressContainer.offsetWidth;
-    const clickPosition = e.offsetX; 
-    const nouveauTime = (clickPosition / containerLargeur) * audioPlayer.duration;
-    audioPlayer.currentTime = nouveauTime; 
-});
+  previous.addEventListener('click', () => {
+    index = (index - 1 + songs.length) % songs.length;
+    const song = songs[index];
+    const { name, artist: songArtist } = song;
+    initializeAudio(name, songArtist);
+    audioPlayer.play();
+    playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
+  });
 
+  progressContainer.addEventListener('click', (e) => {
+    const containerWidth = progressContainer.offsetWidth;
+    const clickPosition = e.offsetX;
+    const newTime = (clickPosition / containerWidth) * audioPlayer.duration;
+    audioPlayer.currentTime = newTime;
+  });
+
+  window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.name) {
+      const song = songs.find((s) => s.name === event.state.name);
+      if (song) {
+        index = songs.indexOf(song);
+        const { name, artist: songArtist } = song;
+        initializeAudio(name, songArtist);
+      }
+    }
+  });
+
+  const firstSong = songs[index];
+  const { title: name, artist: firstArtist } = firstSong;
+  initializeAudio(name, firstArtist);
+}
+
+// Start the application when the DOM is ready
 window.addEventListener('DOMContentLoaded', () => {
-    const song = songs[index]
-    const { name, cover, artist } = song 
-    initializeAudio(name, cover, artist)
+  initializeApp();
 });

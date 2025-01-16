@@ -127,7 +127,6 @@ app.get('/cover/:trackId', (req, res) => {
           // Envoie le fichier BLOB au client avec le bon type MIME
           res.setHeader('Content-Type', 'image/jpg'); // Type MIME pour une image JPEG ou JPG
           res.send(row.cover); // Envoie le BLOB de l'image
-          console.log("row.cover", row.cover)
       }
   });
 });
