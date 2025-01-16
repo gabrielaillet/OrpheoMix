@@ -45,7 +45,7 @@ audioPlayer.addEventListener('loadedmetadata', () => {
 
 const initializeAudio = (song, album, name) => {
     const n = index + 1;
-    audioPlayer.src = `http://localhost:8000/audio/${n}`; // `song` ici représente l'ID
+    audioPlayer.src = `http://localhost:8000/audio/${n}`;
 
     cover.src = `http://localhost:8000/cover/${n}`
     title.innerHTML = song
