@@ -18,6 +18,7 @@ if (!fs.existsSync(dbPath)) {
       song BLOB,
       title TEXT,
       artist TEXT,
+      genre TEXT,
       albumId INTEGER,
       duration INTEGER,
       FOREIGN KEY(albumId) REFERENCES albums(id)
@@ -50,26 +51,31 @@ if (!fs.existsSync(dbPath)) {
       username TEXT,
       hashedPwd TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS genres (
+      id INTEGER PRIMARY KEY,
+      genre TEXT
+    );
   `);
 
-  // Insert dummy data
-  database.exec(`
-    INSERT INTO users (username, hashedPwd) VALUES ('user1', 'hashedpassword1');
-    INSERT INTO users (username, hashedPwd) VALUES ('user2', 'hashedpassword2');
+  // // Insert dummy data
+  // database.exec(`
+  //   INSERT INTO users (username, hashedPwd) VALUES ('user1', 'hashedpassword1');
+  //   INSERT INTO users (username, hashedPwd) VALUES ('user2', 'hashedpassword2');
 
-    INSERT INTO albums (title, artist) VALUES ('Album 1', 'Artist 1');
-    INSERT INTO albums (title, artist) VALUES ('Album 2', 'Artist 2');
+  //   INSERT INTO albums (title, artist) VALUES ('Album 1', 'Artist 1');
+  //   INSERT INTO albums (title, artist) VALUES ('Album 2', 'Artist 2');
 
-    INSERT INTO songs (song, title, artist, albumId, duration) VALUES (NULL, 'Song 1', 'Artist 1', 1, 300);
-    INSERT INTO songs (song, title, artist, albumId, duration) VALUES (NULL, 'Song 2', 'Artist 2', 2, 200);
+  //   INSERT INTO songs (song, title, artist, albumId, duration) VALUES (NULL, 'Song 1', 'Artist 1', 1, 300);
+  //   INSERT INTO songs (song, title, artist, albumId, duration) VALUES (NULL, 'Song 2', 'Artist 2', 2, 200);
 
-    INSERT INTO playlists (title, ownerId) VALUES ('Playlist 1', 1);
-    INSERT INTO playlists (title, ownerId) VALUES ('Playlist 2', 2);
+  //   INSERT INTO playlists (title, ownerId) VALUES ('Playlist 1', 1);
+  //   INSERT INTO playlists (title, ownerId) VALUES ('Playlist 2', 2);
 
-    INSERT INTO playlist_songs (playlistId, songId) VALUES (1, 1);
-    INSERT INTO playlist_songs (playlistId, songId) VALUES (1, 2);
-    INSERT INTO playlist_songs (playlistId, songId) VALUES (2, 1);
-  `);
+  //   INSERT INTO playlist_songs (playlistId, songId) VALUES (1, 1);
+  //   INSERT INTO playlist_songs (playlistId, songId) VALUES (1, 2);
+  //   INSERT INTO playlist_songs (playlistId, songId) VALUES (2, 1);
+  // `);
 } else {
   database = new Database(dbPath);
   console.log("Database already exists.");

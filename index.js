@@ -30,8 +30,6 @@ const server = http.createServer((req, res) => {
   if (req.url === "/" || req.url === "/index.html") {
     // Serve the index page
     serveFile(res, "index.html", "text/html");
-
-
   } else if (req.url === "/css/index.css") {
     // Serve the CSS for the index page
     serveFile(res, "/css/index.css", "text/css");
@@ -44,27 +42,31 @@ const server = http.createServer((req, res) => {
   } else if (req.url === "/css/bootstrap.min.css") {
     // Serve the CSS for the next page
     serveFile(res, "/css/bootstrap.min.css", "text/css");
-  } 
-  
-  
-  
-  else if (req.url === "/firstpage.html") {
+  } else if (req.url === "/artistes.html") {
+    serveFile(res, "/html/artistes.html", "text/html");
+  } else if (req.url === "/sons.html") {
+    serveFile(res, "/html/sons.html", "text/html");
+  } else if (req.url === "/playlists.html") {
+    serveFile(res, "/html/playlists.html", "text/html");
+  } else if (req.url === "/firstpage.html") {
     // Serve the first page
     serveFile(res, "/html/firstPage.html", "text/html");
-
   } else if (req.url === "/nextpage.html") {
     // Serve the next page
     serveFile(res, "/html/nextPage.html", "text/html");
-  }
-  else if (req.url === "/js/buttonGroup.js") {
+  } else if (req.url === "/js/buttonGroup.js") {
     // Serve the button group JavaScript file
     serveFile(res, "js/buttonGroup.js", "application/javascript");
-  }   else if (req.url === "/js/bootstrap.bundle.min.js") {
+  } else if (req.url === "/js/bootstrap.bundle.min.js") {
     // Serve the button group JavaScript file
     serveFile(res, "/js/bootstrap.bundle.min.js", "application/javascript");
-  } 
-
-  else {
+  } else if (req.url === "/js/musicPlayer.js") {
+    // Serve the music player JavaScript file
+    serveFile(res, "js/musicPlayer.js", "application/javascript");
+  } else if (req.url === "/test.mp3") {
+    // Serve the test MP3 file
+    serveFile(res, "html/test.mp3", "audio/mpeg");
+  } else {
     // Serve 404 for unknown routes
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.end("404 Not Found");

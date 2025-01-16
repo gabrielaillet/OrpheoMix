@@ -10,3 +10,6 @@
 steps to run :
 npm install
 npm start
+
+pour le front :
+node index.js

@@ -15,12 +15,12 @@ function createButtonGroup(containerId, buttons, activeIndex) {
 
   // Create the button group div
   const buttonGroup = document.createElement("div");
-  buttonGroup.setAttribute('role', 'group');
+  buttonGroup.setAttribute("role", "group");
 
   const buttonGroupRow = document.createElement("div");
   buttonGroupRow.classList.add("row");
 
-  buttonGroup.classList.add("container-fluid","fixed-top");
+  buttonGroup.classList.add("container-fluid", "fixed-top");
 
   // Generate buttons
   buttons.forEach((button, index) => {
@@ -28,24 +28,23 @@ function createButtonGroup(containerId, buttons, activeIndex) {
     buttonGroupCol.classList.add("col");
 
     const buttonElement = document.createElement("a");
-    buttonElement.setAttribute('href', button.href);
+    buttonElement.setAttribute("href", button.href);
     buttonElement.classList.add("button-56");
 
     // Add active class if the index matches activeIndex
     if (index === activeIndex) {
       buttonElement.classList.add("active");
-      console.log(activeIndex, index)
     }
 
     // Set button label
     buttonElement.textContent = button.label;
 
     // Append button to the group
-    buttonGroupCol.appendChild(buttonElement); 
+    buttonGroupCol.appendChild(buttonElement);
     buttonGroupRow.appendChild(buttonGroupCol);
   });
 
   // Append the button group to the container
-  buttonGroup.appendChild(buttonGroupRow)
+  buttonGroup.appendChild(buttonGroupRow);
   container.appendChild(buttonGroup);
 }
