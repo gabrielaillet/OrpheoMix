@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>First Page - Artistes</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
+  <body>
+    <div id="button-container"></div>
+
+    <div class="container" style="margin-top: 20px">
+      <h1 class="text-center">Featured Artistes</h1>
+      <div class="row">
+        <!-- Artiste 1 -->
+        <div class="col text-center">
+          <div>
+            <img
+              src="/assets/images.jpeg"
+              alt="Profile"
+              style="width: 300px; height: 300px"
+            />
+            <h3 class="mt-3">Lila Star</h3>
+            <h4><span class="badge text-bg-secondary">Metal</span></h4>
+            </p>
+          </div>
+        </div>
+        <!-- Artiste 2 -->
+        <div class="col text-center">
+          <div>
+            <img
+              src="/assets/womenprofile.png"
+              alt="Profile"
+              style="width: 300px; height: 300px"
+            />
+            <h3 class="mt-3">Max Storm</h3>
+            <div style="display: flex;"> 
+              <h4><span class="badge text-bg-secondary">Rock</span></h4>
+              <h4> <span class="badge text-bg-secondary">Indie</span></h4>
+            </div>
+           
+          </div>
+        </div>
+        <!-- Artiste 3 -->
+        <div class="col text-center">
+          <div>
+            <img
+              src="/assets/images.jpeg"
+              alt="Profile"
+              style="width: 300px; height: 300px"
+            />
+            <h3 class="mt-3">Zara Moon</h3>
+            <span class="badge text-bg-secondary">Jazz</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/buttonGroup.js"></script>
+    <script>
+      createButtonGroup("button-container", 0); // Active index is 0 for "Artistes"
+    </script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

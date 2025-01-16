@@ -4,7 +4,13 @@
  * @param {Array} buttons - Array of button objects with `label` and `href`.
  * @param {number} activeIndex - The index of the active button.
  */
-function createButtonGroup(containerId, buttons, activeIndex) {
+function createButtonGroup(containerId, activeIndex) {
+   // Call the function after the script is loaded
+   const buttons = [
+    { label: "Artistes", href: "/firstPage.html" },
+    { label: "Sons", href: "/nextPage.html" },
+    { label: "Mes Playlists", href: "/index.html" },
+  ];
   const container = document.getElementById(containerId);
 
   // Ensure the container exists
@@ -20,7 +26,7 @@ function createButtonGroup(containerId, buttons, activeIndex) {
   const buttonGroupRow = document.createElement("div");
   buttonGroupRow.classList.add("row");
 
-  buttonGroup.classList.add("container-fluid", "fixed-top");
+  buttonGroup.classList.add("container-fluid");
 
   // Generate buttons
   buttons.forEach((button, index) => {

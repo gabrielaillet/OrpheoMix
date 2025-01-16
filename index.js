@@ -42,6 +42,9 @@ const server = http.createServer((req, res) => {
   } else if (req.url === "/css/bootstrap.min.css") {
     // Serve the CSS for the next page
     serveFile(res, "/css/bootstrap.min.css", "text/css");
+<<<<<<< HEAD
+  } else if (req.url === "/firstPage.html") {
+=======
   } else if (req.url === "/artistes.html") {
     serveFile(res, "/html/artistes.html", "text/html");
   } else if (req.url === "/sons.html") {
@@ -49,6 +52,7 @@ const server = http.createServer((req, res) => {
   } else if (req.url === "/playlists.html") {
     serveFile(res, "/html/playlists.html", "text/html");
   } else if (req.url === "/firstpage.html") {
+>>>>>>> main
     // Serve the first page
     serveFile(res, "/html/firstPage.html", "text/html");
   } else if (req.url === "/nextpage.html") {
@@ -60,19 +64,45 @@ const server = http.createServer((req, res) => {
   } else if (req.url === "/js/bootstrap.bundle.min.js") {
     // Serve the button group JavaScript file
     serveFile(res, "/js/bootstrap.bundle.min.js", "application/javascript");
+<<<<<<< HEAD
+  } else if (req.url.startsWith("/assets/")) {
+    // Serve assets (images, etc.)
+    const ext = path.extname(req.url).toLowerCase();
+    let contentType;
+
+    switch (ext) {
+      case ".jpg":
+      case ".jpeg":
+        contentType = "image/jpeg";
+        break;
+      case ".png":
+        contentType = "image/png";
+        break;
+      case ".gif":
+        contentType = "image/gif";
+        break;
+      case ".svg":
+        contentType = "image/svg+xml";
+        break;
+      default:
+        contentType = "application/octet-stream"; // Default content type
+    }
+
+    serveFile(res, req.url, contentType);
+=======
   } else if (req.url === "/js/musicPlayer.js") {
     // Serve the music player JavaScript file
     serveFile(res, "js/musicPlayer.js", "application/javascript");
   } else if (req.url === "/test.mp3") {
     // Serve the test MP3 file
     serveFile(res, "html/test.mp3", "audio/mpeg");
+>>>>>>> main
   } else {
     // Serve 404 for unknown routes
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.end("404 Not Found");
   }
 });
-
 // Start the server
 server.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
