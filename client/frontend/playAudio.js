@@ -1,8 +1,9 @@
-const songs = [ 
-    { name : "test", cover : "cover.jpeg", artist : "Suna" },
-    { name : "danger", cover : "album1.jpg", artist : "Internet" },
-    { name : "psytrance-loop", cover : "album2.jpg", artist : "Internet2" }
-]
+const songs = [
+    { id: 1, name: "test", cover: "cover.jpeg", artist: "Suna" },
+    { id: 2, name: "danger", cover: "album1.jpg", artist: "Internet" },
+    { id: 3, name: "psytrance-loop", cover: "album2.jpg", artist: "Internet2" }
+];
+
 
 const playPauseButton = document.getElementById('playPauseButton');
 const audioPlayer = document.getElementById('audioPlayer');
@@ -43,7 +44,9 @@ audioPlayer.addEventListener('loadedmetadata', () => {
 });
 
 const initializeAudio = (song, album, name) => {
-    audioPlayer.src = `${song}.mp3`;
+    const n = index + 1
+    audioPlayer.src = `http://localhost:8000/audio/${n}`; // `song` ici représente l'ID
+
     cover.src = `${album}`
     title.innerHTML = song
     artist.innerHTML = name

@@ -68,7 +68,6 @@ app.get('/db/:id', (req, res) => {
           details: {
             id: row.id,
             title: row.title,
-            audio: row.audio
           },
         });
       }
