@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Songs</title>
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/nextPage.css">
+</head>
+
+<body>
+  <div id="main-container"></div>
+
+  <script>
+    function loadComponent(url, callback) {
+      fetch(url)
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('main-container').innerHTML = data;
+          if (callback) callback();
+        })
+        .catch(error => console.error('Error loading component:', error));
+    }
+
+    function selectGenre(genre) {
+      loadComponent('/html/songList.html', () => {
+        console.log('Selected genre:', genre);
+      });
+    }
+
+    // Load the initial genre selection component
+    loadComponent('/html/genreSelection.html');
+  </script>
+</body>
+
+</html>
