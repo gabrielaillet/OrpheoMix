@@ -93,7 +93,7 @@ async function initializeApp() {
     const { title: name, artist: songArtist } = song;
     initializeAudio(name, songArtist);
     audioPlayer.play();
-    playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
+    playPauseButton.innerHTML = '&#10074;&#10074;';
   });
 
   previous.addEventListener('click', () => {
@@ -102,7 +102,7 @@ async function initializeApp() {
     const { name, artist: songArtist } = song;
     initializeAudio(name, songArtist);
     audioPlayer.play();
-    playPauseButton.innerHTML = '&#10074;&#10074;'; // Pause icon
+    playPauseButton.innerHTML = '&#10074;&#10074;';
   });
 
   progressContainer.addEventListener('click', (e) => {
