@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index Page</title>
+    <!-- Bootstrap CSS -->
+    <link
+    href="css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
+  <body>
+    <h1 class="text-center mb-4">Welcome to the Index Page</h1>
+
+    <div
+      class="movable-container container-fluid"
+      role="group"
+      id="movableContainer"
+    >
+      <div class="row">
+        <div class="col">
+          <a
+            href="/html/firstpage.html"
+            class="button-56"
+            role="button"
+            onclick="moveContainer(event, '/firstPage.html')"
+            >Artistes</a
+          >
+        </div>
+        <div class="col">
+          <a href="/nextpage.html" class="button-56" role="button" onclick="moveContainer(event, '/nextpage.html')">Sons</a>
+        </div>
+        <div class="col">
+          <a
+            href="/index.html"
+            class="button-56"
+            role="button"
+            onclick="moveContainer(event, '/firstpage.html')"
+            >Mes Playlists</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function moveContainer(event, targetUrl) {
+        event.preventDefault(); // Prevent the default navigation
+
+        const container = document.getElementById("movableContainer");
+        container.classList.add("move-to-top"); // Add the class to trigger animation
+
+        // Navigate after the animation completes
+        setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 800); // Match the duration of the CSS transition (0.8s)
+      }
+    </script>
+  </body>
+</html>
