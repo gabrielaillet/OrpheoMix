@@ -8,10 +8,11 @@
     "start": "node main.js"
   },
   "keywords": [],
-  "author": "badr fourane",
   "dependencies": {
     "better-sqlite3": "^11.8.0",
     "bootstrap": "^5.3.3",
-    "express": "^4.21.2"
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7"
   }
 }
