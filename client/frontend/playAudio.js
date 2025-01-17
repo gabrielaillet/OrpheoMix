@@ -99,7 +99,7 @@ async function initializeApp() {
   previous.addEventListener('click', () => {
     index = (index - 1 + songs.length) % songs.length;
     const song = songs[index];
-    const { name, artist: songArtist } = song;
+    const { title: name, artist: songArtist } = song;
     initializeAudio(name, songArtist);
     audioPlayer.play();
     playPauseButton.innerHTML = '&#10074;&#10074;';
