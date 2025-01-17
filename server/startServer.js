@@ -30,6 +30,24 @@ function retrieveText(callback) {
   });
 }
 
+function retrieveByGenre(genre, callback) {
+  db.get(
+    `SELECT id, title FROM tracks WHERE genre = ?`,
+    [genre],
+    (err, row) => {
+      if (err) {
+        console.error('Error retrieving track:', err.message);
+        callback(err, null); // Passe l'erreur au rappel
+      } else if (row) {
+        callback(null, row); // Passe les données au rappel
+      } else {
+        console.log('No track found with the given genre.');
+        callback(null, null); // Indique qu'aucune piste n'a été trouvée
+      }
+    }
+  );
+}
+
 function retrieveById(id, callback) {
   db.get(
     `SELECT id, title, audio FROM tracks WHERE id = ?`,
@@ -94,6 +112,23 @@ app.get('/db/:id', (req, res) => {
       }
     });
   });
+
+
+// Endpoint pour récupérer les musiques par genre
+app.get('/music/:genre', (req, res) => {
+  const genre = req.params.genre; // Récupère le genre depuis l'URL
+
+  retrieveByGenre(genre, (err, tracks) => {
+    if (err) {
+      res.status(500).send('Erreur lors de la récupération des musiques.');
+    } else if (!tracks) {
+      res.status(404).send(`Aucune musique trouvée pour le genre ${genre}.`);
+    } else {
+      res.json(tracks); 
+    }
+  });
+});
+
 
 app.get('/audio/:trackId', (req, res) => {
     const trackId = req.params.trackId; // Récupère l'ID de la piste audio

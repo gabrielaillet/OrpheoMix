@@ -14,7 +14,8 @@ db.run(`
     title TEXT NOT NULL,
     cover BLOB,
     artist TEXT,
-    audio BLOB
+    audio BLOB,
+    genre TEXT NOT NULL 
   )
 `, (err) => {
   if (err) {

@@ -1,15 +1,15 @@
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 
-const db = new sqlite3.Database('../server/db/music2.db');
+const db = new sqlite3.Database('../server/db/music1.db');
 
 // Function to insert an MP3 file
-function insertMP3(title, cover, artist, filePath) {
-  const audioData = fs.readFileSync(filePath); // Read the MP3 file as binary data
+function insertMP3(title, cover, artist, genre, filePath) {
+  const audioData = fs.readFileSync(filePath);
 
   db.run(
-    `INSERT INTO tracks (title, cover, artist, audio) VALUES (?, ?, ?, ?)`,
-    [title, cover, artist, audioData],
+    `INSERT INTO tracks (title, cover, artist, genre, audio) VALUES (?, ?, ?, ?, ?)`,
+    [title, cover, artist, genre, audioData],
     function (err) {
       if (err) {
         console.error('Error inserting MP3 file:', err.message);
@@ -24,13 +24,13 @@ function insertMP3(title, cover, artist, filePath) {
 // Insert an MP3 file (example)
 
 const songs = [ 
-  { name : "test", cover : "cover.jpeg", artist : "Suna" , filePath : "frontend/test.mp3" },
-  { name : "danger", cover : "album1.jpg", artist : "Internet", filePath : "frontend/danger.mp3" },
-  { name : "psytrance-loop", cover : "album2.jpg", artist : "Internet2", filePath : "frontend/psytrance-loop.mp3"}
+  { name : "test", cover : "cover.jpeg", artist : "Suna" , genre : "AI Music" ,  filePath : "frontend/test.mp3" },
+  { name : "danger", cover : "album1.jpg", artist : "Internet", genre : "POP" , filePath : "frontend/danger.mp3" },
+  { name : "psytrance-loop", cover : "album2.jpg", artist : "Internet2", genre : "Classical" , filePath : "frontend/psytrance-loop.mp3"},
 ]
 
 for (let song of songs) {
-  insertMP3(song.name, song.cover, song.artist, song.filePath);
+  insertMP3(song.name, song.cover, song.artist, song.genre, song.filePath);
 }
 
 
