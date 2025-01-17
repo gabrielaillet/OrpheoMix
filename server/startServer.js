@@ -1,6 +1,8 @@
-const sqlite3 = require('sqlite3').verbose();
-const express = require('express');
-const cors = require('cors');
+import sqlite3 from 'sqlite3';
+import express from 'express';
+import cors from 'cors';
+
+sqlite3.verbose();
 const app = express();
 const port = 8000;
 
