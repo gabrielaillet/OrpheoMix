@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Page</title>
+
+    <!-- Lien vers Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="authPage.css"> 
+</head>
+
+<body class="bg-light">
+
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+
+        <div class="card p-4 shadow-lg" style="width: 400px;">
+
+            <h2 class="text-center mb-4">Welcome to OrpheoMix!</h2>
+
+            <!-- Inscription form -->
+            <form id="signupForm">
+                <h4 class="text-center mb-3">Sign Up</h4>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="pseudoSignup" name="pseudo" placeholder="Pseudo" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="passwordSignup" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+            </form>
+
+            <!-- login form -->
+            <form id="loginForm" class="mt-4">
+                <h4 class="text-center mb-3">Login</h4>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="pseudoLogin" name="pseudo" placeholder="Pseudo" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="passwordLogin" name="password" placeholder="Password" required>
+                </div>
+
+                
+                <div class="mb-3">
+                    <label class="form-label">Select Role</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="role" id="roleUser" value="user" checked>
+                        <label class="form-check-label" for="roleUser">
+                            User
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="role" id="roleAdmin" value="admin">
+                        <label class="form-check-label" for="roleAdmin">
+                            Admin
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Login</button>
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS and dépendancies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="authentification.js"></script> 
+</body>
+
+</html>
