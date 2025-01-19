@@ -7,9 +7,19 @@
 - bootstrap
 - express js
 
+
+
 steps to run :
 npm install
 npm start
 
-pour le front :
-node index.js
+
+
+#### Pour le Client :
+    node index.js
+
+
+#### Pour le Serveur:
+    dans /server
+        node create_db.js
+        node startServer.js 
