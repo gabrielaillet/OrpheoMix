@@ -6,12 +6,12 @@ document
     const pseudo = document.getElementById("pseudoSignup").value;
     const password = document.getElementById("passwordSignup").value;
 
-    const response = await fetch("/signup", {
+    const response = await fetch("http://localhost:8000/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pseudo, password }),
     });
-
+    console.log(JSON.stringify({ pseudo, password }),)
     const message = await response.text();
     alert(message);
   });
@@ -24,7 +24,7 @@ document
     const pseudo = document.getElementById("pseudoLogin").value;
     const password = document.getElementById("passwordLogin").value;
 
-    fetch("/login", {
+    fetch("http://localhost:8000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
