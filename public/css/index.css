@@ -21,11 +21,6 @@ a:hover {
   background-color: transparent;
 }
 
-.container {
-  display: grid;
-  grid-template-rows: 1fr 6fr 1fr;
-}
-
 .btn-group {
   display: flex;
   flex-direction: row;
@@ -135,6 +130,14 @@ body {
 #content-container {
   overflow-y: auto;
   overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Display songs vertically */
+  gap: 10px; /* Adjust gap as needed */
+  border: 2px solid #111; /* Add border */
+  border-radius: 8px; /* Add border radius */
+  padding: 10px; /* Add padding */
+  background-color: #f8f9fa; /* Optional: Add background color */
+  flex-grow: 1; /* Make the song slider grow to fill the available space */
 }
 
 .track-info {
@@ -324,47 +327,6 @@ body {
   margin-left: auto;
 }
 
-/* playlists css */
-.playlists-container {
-  display: flex;
-}
-
-.playlists-name {
-  width: 200px;
-  border-right: 1px solid #ddd;
-  padding: 10px;
-}
-
-.playlists-name ul {
-  list-style: none;
-  padding: 0;
-}
-
-.playlists-name li {
-  padding: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.playlists-name li:hover {
-  background-color: #f0f0f0;
-}
-
-.playlists-content {
-  flex-grow: 1;
-  padding: 10px;
-}
-
-.playlists-content ul {
-  list-style: none;
-  padding: 0;
-}
-
-.playlists-content li {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
 /* Modern Music Player Styles */
 .music-player {
   position: fixed;
@@ -539,4 +501,75 @@ body {
 /* Adjust the main content container to account for the player */
 .main-content {
   padding-bottom: 100px; /* Height of the player plus some padding */
+}
+
+.playlists-container {
+  display: flex;
+  height: 100%;
+  gap: 20px;
+  padding: 20px;
+}
+
+.playlists-name {
+  width: 250px;
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.playlists-name ul {
+  list-style: none;
+  padding: 0;
+}
+
+.playlists-name li {
+  padding: 10px 15px;
+  margin: 5px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.playlists-name li:hover {
+  background-color: #e0e0e0;
+}
+
+.playlists-content {
+  flex-grow: 1;
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.song-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  margin: 5px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.song-item:hover {
+  background-color: #e0e0e0;
+}
+
+.song-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.song-title {
+  font-weight: bold;
+}
+
+.song-artist {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.song-duration {
+  color: #666;
 }

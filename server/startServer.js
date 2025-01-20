@@ -285,6 +285,40 @@ app.get("/genres", (req, res) => {
   });
 });
 
+// Get user's playlists
+app.get("/playlists/:userId/playlists", (req, res) => {
+  const userId = req.params.userId;
+  playlistDb.all(
+    "SELECT * FROM playlists WHERE ownerId = ?",
+    [userId],
+    (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: "Error fetching playlists" });
+      } else {
+        res.json(rows);
+      }
+    }
+  );
+});
+
+// Get playlist songs
+app.get("/playlists/:playlistId", (req, res) => {
+  const playlistId = req.params.playlistId;
+  playlistDb.all(
+    `SELECT songs.* FROM songs 
+     JOIN playlist_songs ON songs.id = playlist_songs.songId 
+     WHERE playlist_songs.playlistId = ?`,
+    [playlistId],
+    (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: "Error fetching playlist songs" });
+      } else {
+        res.json(rows);
+      }
+    }
+  );
+});
+
 // First, add a new database connection for artists
 const dbArtists = new sqlite3.Database("db/artists.db", (err) => {
   if (err) {
@@ -388,6 +422,56 @@ app.get("/debug/artists", (req, res) => {
     }
   });
 });
+
+// Add dummy data for testing playlists
+function insertDummyPlaylistData() {
+  // Insert test users
+  playlistDb.run(
+    `INSERT OR IGNORE INTO users (id, username) VALUES (1, 'testUser')`
+  );
+
+  // Insert test songs
+  const songQueries = [
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (1, 'Bohemian Rhapsody', 'Queen', 354)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (2, 'Hotel California', 'Eagles', 391)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (3, 'Sweet Child O Mine', 'Guns N Roses', 356)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (4, 'Beat It', 'Michael Jackson', 258)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (5, 'Stairway to Heaven', 'Led Zeppelin', 482)`,
+  ];
+
+  // Insert test playlists
+  const playlistQueries = [
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (1, 'Rock Classics', 1)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (2, 'Best Hits', 1)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (3, 'My Favorites', 1)`,
+  ];
+
+  // Insert playlist-song relationships
+  const playlistSongQueries = [
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 1)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 2)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 3)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 1)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 4)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 2)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 5)`,
+  ];
+
+  // Execute all queries
+  const queries = [...songQueries, ...playlistQueries, ...playlistSongQueries];
+  queries.forEach((query) => {
+    playlistDb.run(query, (err) => {
+      if (err) {
+        console.error("Error inserting dummy data:", err.message);
+      }
+    });
+  });
+
+  console.log("Dummy playlist data inserted successfully");
+}
+
+// Call this function after database connection
+insertDummyPlaylistData();
 
 app.listen(port, () => {
   console.log("Server app listening on port " + port);
