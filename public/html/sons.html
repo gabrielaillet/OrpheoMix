@@ -1,37 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
+<div class="content-container">
+  <div class="genre-buttons" id="genre-buttons">
+      <!-- Genre buttons will be added dynamically -->
+  </div>
+  <div id="song-slider" class="song-slider">
+      <!-- Songs will be loaded here dynamically -->
+  </div>
+</div>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Songs</title>
-  <link rel="stylesheet" href="/css/index.css">
-  <link rel="stylesheet" href="/css/nextPage.css">
-</head>
-
-<body>
-  <div id="main-container"></div>
-
-  <script>
-    function loadComponent(url, callback) {
-      fetch(url)
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('main-container').innerHTML = data;
-          if (callback) callback();
-        })
-        .catch(error => console.error('Error loading component:', error));
-    }
-
-    function selectGenre(genre) {
-      loadComponent('/html/songList.html', () => {
-        console.log('Selected genre:', genre);
+<script>
+  const API_BASE_URL = 'http://localhost:8000';
+  
+  function createGenreButtons() {
+      const genres = ['Mixed', 'Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop'];
+      const buttonsContainer = document.getElementById('genre-buttons');
+      
+      genres.forEach(genre => {
+          const button = document.createElement('button');
+          button.className = `genre-button ${genre === 'Mixed' ? 'active' : ''}`;
+          button.textContent = genre;
+          button.addEventListener('click', () => selectGenre(genre));
+          buttonsContainer.appendChild(button);
       });
-    }
+  }
 
-    // Load the initial genre selection component
-    loadComponent('/html/genreSelection.html');
-  </script>
-</body>
+  function formatDuration(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
 
-</html>
+  async function getSongDuration(songId) {
+      return new Promise((resolve) => {
+          const audio = new Audio(`${API_BASE_URL}/audio/${songId}`);
+          
+          audio.addEventListener('loadedmetadata', () => {
+              resolve(formatDuration(audio.duration));
+              audio.remove(); // Clean up
+          });
+
+          audio.addEventListener('error', () => {
+              resolve('0:00'); // Return default duration on error
+              audio.remove(); // Clean up
+          });
+      });
+  }
+
+  async function loadSongs(genre = 'Mixed') {
+      try {
+          let response;
+          if (genre === 'Mixed') {
+              response = await fetch(`${API_BASE_URL}/songs`);
+          } else {
+              response = await fetch(`${API_BASE_URL}/music/${genre}`);
+          }
+          
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const songs = await response.json();
+          await displaySongs(songs, genre);
+      } catch (error) {
+          console.error('Error loading songs:', error);
+          document.getElementById('song-slider').innerHTML = 
+              `<p>Error loading songs for ${genre}. Please try again.</p>`;
+      }
+  }
+
+  async function displaySongs(songs, currentGenre) {
+      const songSlider = document.getElementById('song-slider');
+      
+      if (!songs || (Array.isArray(songs) && songs.length === 0)) {
+          songSlider.innerHTML = `<p>No songs found for ${currentGenre}</p>`;
+          return;
+      }
+
+      // Show loading state
+      songSlider.innerHTML = '<p>Loading songs...</p>';
+
+      // Ensure songs is always an array
+      const songsArray = Array.isArray(songs) ? songs : [songs];
+      
+      // Create song elements first with loading state for duration
+      const songsHtml = songsArray.map(song => `
+          <div class="song" onclick="playSong(${song.id})">
+              <img src="${API_BASE_URL}/cover/${song.id}" alt="Cover" class="song-cover">
+              <div class="song-info">
+                  <p class="song-title">${song.title}</p>
+                  <p class="song-artist">${song.artist || 'Unknown Artist'}</p>
+              </div>
+              <p class="song-duration" id="duration-${song.id}">...</p>
+          </div>
+      `).join('');
+      
+      songSlider.innerHTML = songsHtml;
+
+      // Then load durations asynchronously
+      for (const song of songsArray) {
+          const duration = await getSongDuration(song.id);
+          const durationElement = document.getElementById(`duration-${song.id}`);
+          if (durationElement) {
+              durationElement.textContent = duration;
+          }
+      }
+  }
+
+  function selectGenre(genre) {
+      // Update active button state
+      document.querySelectorAll('.genre-button').forEach(button => {
+          button.classList.remove('active');
+          if (button.textContent === genre) {
+              button.classList.add('active');
+          }
+      });
+
+      // Load songs for selected genre
+      loadSongs(genre);
+  }
+
+  function playSong(id) {
+      const audioPlayer = document.querySelector('audio');
+      if (audioPlayer) {
+          audioPlayer.src = `${API_BASE_URL}/audio/${id}`;
+          audioPlayer.play().catch(error => {
+              console.error('Error playing audio:', error);
+          });
+      }
+  }
+
+  // Initialize everything when the script loads
+  createGenreButtons();
+  loadSongs('Mixed');
+</script>
