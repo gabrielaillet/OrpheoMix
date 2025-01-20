@@ -251,6 +251,110 @@ app.post("/login", (req, res) => {
   });
 });
 
+// First, add a new database connection for artists
+const dbArtists = new sqlite3.Database("db/artists.db", (err) => {
+  if (err) {
+    console.error("Error connecting to artists database:", err.message);
+  } else {
+    console.log("Connected to the artists database");
+  }
+});
+
+// Updated function to get all artists
+function retrieveAllArtists(callback) {
+  dbArtists.all(
+    `SELECT id, name, genre as primaryGenre, 
+            (SELECT COUNT(*) FROM artists) as totalArtists
+     FROM artists
+     ORDER BY name`,
+    (err, rows) => {
+      if (err) {
+        console.error(err.message);
+        callback(err, null);
+      } else {
+        callback(null, rows);
+      }
+    }
+  );
+}
+
+// Updated function to get artist details
+function retrieveArtistDetails(artistName, callback) {
+  const decodedName = decodeURIComponent(artistName);
+  
+  dbArtists.get(
+    `SELECT *,
+            (SELECT COUNT(*) FROM json_each(popularSongs)) as songCount
+     FROM artists
+     WHERE name = ?`,
+    [decodedName],
+    (err, artist) => {
+      if (err) {
+        console.error(err.message);
+        callback(err, null);
+      } else if (artist) {
+        let popularSongs = [];
+        try {
+          popularSongs = JSON.parse(artist.popularSongs);
+        } catch (e) {
+          console.error('Error parsing popularSongs:', e);
+        }
+        const artistDetails = {
+          id: artist.id,
+          name: artist.name,
+          bio: artist.bio,
+          funFact: artist.funFact,
+          genre: artist.genre,
+          popularSongs: popularSongs,
+          songCount: artist.songCount || popularSongs.length
+        };
+        callback(null, artistDetails);
+      } else {
+        callback(null, null);
+      }
+    }
+  );
+}
+
+// Updated artists endpoints
+app.get("/artists", (req, res) => {
+  retrieveAllArtists((err, data) => {
+    if (err) {
+      res.status(500).send("Error retrieving artists");
+    } else {
+      res.json(data);
+    }
+  });
+});
+
+app.get("/artists/:name", (req, res) => {
+  const artistName = req.params.name;
+  console.log('Received request for artist:', artistName);
+  
+  retrieveArtistDetails(artistName, (err, data) => {
+    if (err) {
+      console.error('Error:', err);
+      res.status(500).send("Error retrieving artist details");
+    } else if (!data) {
+      console.log('No artist found with name:', artistName);
+      res.status(404).send("Artist not found");
+    } else {
+      res.json(data);
+    }
+  });
+});
+
+// Add this temporary endpoint to check database contents
+app.get("/debug/artists", (req, res) => {
+  dbArtists.all("SELECT name FROM artists", (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else {
+      res.json(rows);
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log("Server app listening on port " + port);
 });

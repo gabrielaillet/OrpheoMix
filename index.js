@@ -16,6 +16,11 @@ app.get("/html/sons.html", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "html", "sons.html"));
 });
 
+// Route for artistes.html
+app.get("/html/artistes.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "html", "artistes.html"));
+});
+
 // Default route
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
