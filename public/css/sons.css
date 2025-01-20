@@ -1,0 +1,71 @@
+.content-container {
+    padding: 20px;
+}
+
+.genre-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.genre-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.genre-button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.song-slider {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.song {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    gap: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.song:hover {
+    background-color: #e9ecef;
+}
+
+.song-cover {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.song-info {
+    flex-grow: 1;
+}
+
+.song-title {
+    margin: 0;
+    font-weight: bold;
+}
+
+.song-artist {
+    margin: 0;
+    color: #666;
+}
+
+.song-duration {
+    margin: 0;
+    color: #666;
+}
