@@ -41,18 +41,18 @@ function retrieveText(callback) {
 }
 
 function retrieveByGenre(genre, callback) {
-  db.get(
-    `SELECT id, title FROM tracks WHERE genre = ?`,
+  db.all(
+    `SELECT id, title, artist FROM tracks WHERE genre = ?`,
     [genre],
-    (err, row) => {
+    (err, rows) => {
       if (err) {
-        console.error("Error retrieving track:", err.message);
-        callback(err, null); // Passe l'erreur au rappel
-      } else if (row) {
-        callback(null, row); // Passe les données au rappel
+        console.error("Error retrieving tracks:", err.message);
+        callback(err, null);
+      } else if (rows && rows.length > 0) {
+        callback(null, rows);
       } else {
-        console.log("No track found with the given genre.");
-        callback(null, null); // Indique qu'aucune piste n'a été trouvée
+        console.log("No tracks found for the given genre.");
+        callback(null, []);
       }
     }
   );
