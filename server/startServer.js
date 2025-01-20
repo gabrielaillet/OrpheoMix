@@ -355,6 +355,56 @@ app.get("/debug/artists", (req, res) => {
   });
 });
 
+function addToPlaylist(playlistId, songId) {
+  const stmt = database.prepare(`
+    INSERT INTO playlist_songs (playlistId, songId)
+    VALUES (?, ?)
+  `);
+  
+  stmt.run(playlistId, songId);  
+}
+
+// Ajouter une chanson à une playlist
+app.post('/playlists/:playlistId/songs', (req, res) => {
+  const { playlistId } = req.params;
+  const { songId } = req.body;
+
+  // Vérifie que l'ID de la chanson et de la playlist sont valides (optionnel, mais recommandé)
+  if (!playlistId || !songId) {
+    return res.status(400).send('Playlist ID and Song ID are required');
+  }
+
+  try {
+    addToPlaylist(playlistId, songId);  // Ajouter la chanson à la playlist
+    res.status(201).send('Song added to playlist');
+  } catch (error) {
+    console.error('Error adding song to playlist:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+app.get('/playlists/:playlistId/songs', (req, res) => {
+  const { playlistId } = req.params;
+
+  const stmt = database.prepare(`
+    SELECT songs.id, songs.title, songs.artist
+    FROM songs
+    JOIN playlist_songs ON songs.id = playlist_songs.songId
+    WHERE playlist_songs.playlistId = ?
+  `);
+  
+  const songs = stmt.all(playlistId);  // Récupère toutes les chansons de la playlist
+  res.status(200).json(songs);  // Renvoie les chansons en JSON
+});
+// Endpoint for checking the user's playlists
+//app.get('/playlists', (req, res) => {
+
+//  const userPlaylists = getPlaylistsForUser(req.user.id); 
+//res.json(userPlaylists);
+//});
+
+
 app.listen(port, () => {
   console.log("Server app listening on port " + port);
 });

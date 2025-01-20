@@ -1,4 +1,49 @@
-<div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlists</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
   <h2>Mes Playlists</h2>
-  <p>Content for Mes Playlists</p>
-</div>
+  <div id="playlists"></div>
+
+  <!-- Inclure auth.js pour l'authentification -->
+  <script src="js/authentification.js"></script>
+
+  <!-- Inclure playlists.js pour la gestion des playlists -->
+  <script src="js/playlists.js"></script>
+
+  <script>
+    // Vérifier si l'utilisateur est authentifié
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+
+    if (isAuthenticated) {
+      const userId = localStorage.getItem("userId");
+
+      // Si l'utilisateur est authentifié, récupérer ses playlists
+      async function fetchPlaylists() {
+        const response = await fetch(`http://localhost:3000/playlists/${userId}`);
+        const playlists = await response.json();
+        const playlistsDiv = document.getElementById("playlists");
+
+        playlists.forEach(playlist => {
+          const playlistDiv = document.createElement("div");
+          playlistDiv.innerHTML = `
+            <h3>${playlist.title}</h3>
+            <button class="add-to-playlist" onclick="addToPlaylist(${playlist.id}, ${song.id})">Ajouter à la playlist</button>
+          `;
+          playlistsDiv.appendChild(playlistDiv);
+        });
+      }
+
+      fetchPlaylists();
+    } else {
+      // Si l'utilisateur n'est pas authentifié, rediriger vers la page de connexion
+      window.location.href = "/login.html";
+    }
+  </script>
+</body>
+</html>

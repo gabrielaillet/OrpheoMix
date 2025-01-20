@@ -69,3 +69,67 @@
     margin: 0;
     color: #666;
 }
+.add-to-playlist {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-playlist:hover {
+    background-color: #0056b3;
+}
+
+.add-to-playlist:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+/* Playlist container */
+.playlist-container {
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-top: 1px solid #ddd;
+}
+
+.playlist-container h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #444;
+}
+
+.playlist {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 50px;
+}
+
+.playlist-song {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.playlist-song:last-child {
+    border-bottom: none;
+}
+
+.remove-song {
+    color: #ff5722;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.remove-song:hover {
+    text-decoration: underline;
+}

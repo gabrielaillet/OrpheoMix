@@ -57,7 +57,7 @@ if (!fs.existsSync(dbPath)) {
       genre TEXT
     );
   `);
-
+  
   // // Insert dummy data
   // database.exec(`
   //   INSERT INTO users (username, hashedPwd) VALUES ('user1', 'hashedpassword1');
@@ -80,5 +80,6 @@ if (!fs.existsSync(dbPath)) {
   database = new Database(dbPath);
   console.log("Database already exists.");
 }
+
 
 export default database;

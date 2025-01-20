@@ -41,7 +41,13 @@ document
       })
       .then((data) => {
         console.log(data.message);
-        // Redirection if authentication succeeded
+
+        
+        // Stocker l'indicateur d'authentification
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("userId", data.userId);
+
+        // Redirection si l'authentification est réussie
         window.location.href = "/";
       })
       .catch((error) => {

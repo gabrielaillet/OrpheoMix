@@ -9,126 +9,162 @@
 
 <script>
   const API_BASE_URL = 'http://localhost:8000';
-  
-  function createGenreButtons() {
-      const genres = ['Mixed', 'Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop'];
-      const buttonsContainer = document.getElementById('genre-buttons');
-      
-      genres.forEach(genre => {
-          const button = document.createElement('button');
-          button.className = `genre-button ${genre === 'Mixed' ? 'active' : ''}`;
-          button.textContent = genre;
-          button.addEventListener('click', () => selectGenre(genre));
-          buttonsContainer.appendChild(button);
-      });
-  }
+  let playlist = [];
+  let isAuthenticated = false;
 
-  function formatDuration(seconds) {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = Math.floor(seconds % 60);
-      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  }
+  // Simulated authentication check (replace with real logic)
+  function checkAuthentication() {
+        // Simulate fetching auth status from an API or session
+        // Set `isAuthenticated = true` if the user is logged in
+        return new Promise(resolve => {
+            setTimeout(() => {
+                isAuthenticated = true; // Example: Assume the user is authenticated
+                resolve(isAuthenticated);
+            }, 1000); // Simulate network delay
+        });
+    }
 
-  async function getSongDuration(songId) {
-      return new Promise((resolve) => {
-          const audio = new Audio(`${API_BASE_URL}/audio/${songId}`);
-          
-          audio.addEventListener('loadedmetadata', () => {
-              resolve(formatDuration(audio.duration));
-              audio.remove(); // Clean up
-          });
+    function createGenreButtons() {
+        const genres = ['Mixed', 'Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop'];
+        const buttonsContainer = document.getElementById('genre-buttons');
+        
+        genres.forEach(genre => {
+            const button = document.createElement('button');
+            button.className = `genre-button ${genre === 'Mixed' ? 'active' : ''}`;
+            button.textContent = genre;
+            button.addEventListener('click', () => selectGenre(genre));
+            buttonsContainer.appendChild(button);
+        });
+    }
 
-          audio.addEventListener('error', () => {
-              resolve('0:00'); // Return default duration on error
-              audio.remove(); // Clean up
-          });
-      });
-  }
+    function formatDuration(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
 
-  async function loadSongs(genre = 'Mixed') {
-      try {
-          let response;
-          if (genre === 'Mixed') {
-              response = await fetch(`${API_BASE_URL}/songs`);
-          } else {
-              response = await fetch(`${API_BASE_URL}/music/${genre}`);
-          }
-          
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          const songs = await response.json();
-          await displaySongs(songs, genre);
-      } catch (error) {
-          console.error('Error loading songs:', error);
-          document.getElementById('song-slider').innerHTML = 
-              `<p>Error loading songs for ${genre}. Please try again.</p>`;
-      }
-  }
+    async function getSongDuration(songId) {
+        return new Promise((resolve) => {
+            const audio = new Audio(`${API_BASE_URL}/audio/${songId}`);
+            
+            audio.addEventListener('loadedmetadata', () => {
+                resolve(formatDuration(audio.duration));
+                audio.remove(); // Clean up
+            });
 
-  async function displaySongs(songs, currentGenre) {
-      const songSlider = document.getElementById('song-slider');
-      
-      if (!songs || (Array.isArray(songs) && songs.length === 0)) {
-          songSlider.innerHTML = `<p>No songs found for ${currentGenre}</p>`;
-          return;
-      }
+            audio.addEventListener('error', () => {
+                resolve('0:00'); // Default duration on error
+                audio.remove(); // Clean up
+            });
+        });
+    }
 
-      // Show loading state
-      songSlider.innerHTML = '<p>Loading songs...</p>';
+    async function loadSongs(genre = 'Mixed') {
+        try {
+            const response = await fetch(
+              genre === 'Mixed' 
+              ? `${API_BASE_URL}/songs` 
+              : `${API_BASE_URL}/music/${genre}`
+            );
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const songs = await response.json();
+            await displaySongs(songs, genre);
+        } catch (error) {
+            console.error('Error loading songs:', error);
+            document.getElementById('song-slider').innerHTML = 
+                `<p>Error loading songs for ${genre}. Please try again.</p>`;
+        }
+    }
 
-      // Ensure songs is always an array
-      const songsArray = Array.isArray(songs) ? songs : [songs];
-      
-      // Create song elements first with loading state for duration
-      const songsHtml = songsArray.map(song => `
-          <div class="song" onclick="playSong(${song.id})">
-              <img src="${API_BASE_URL}/cover/${song.id}" alt="Cover" class="song-cover">
-              <div class="song-info">
-                  <p class="song-title">${song.title}</p>
-                  <p class="song-artist">${song.artist || 'Unknown Artist'}</p>
-              </div>
-              <p class="song-duration" id="duration-${song.id}">...</p>
-          </div>
-      `).join('');
-      
-      songSlider.innerHTML = songsHtml;
+    async function displaySongs(songs, currentGenre) {
+        const songSlider = document.getElementById('song-slider');
+        
+        if (!songs || (Array.isArray(songs) && songs.length === 0)) {
+            songSlider.innerHTML = `<p>No songs found for ${currentGenre}</p>`;
+            return;
+        }
 
-      // Then load durations asynchronously
-      for (const song of songsArray) {
-          const duration = await getSongDuration(song.id);
-          const durationElement = document.getElementById(`duration-${song.id}`);
-          if (durationElement) {
-              durationElement.textContent = duration;
-          }
-      }
-  }
+        songSlider.innerHTML = '<p>Loading songs...</p>';
+        const songsArray = Array.isArray(songs) ? songs : [songs];
+        
+        const songsHtml = songsArray.map(song => `
+            <div class="song">
+                <img src="${API_BASE_URL}/cover/${song.id}" alt="Cover" class="song-cover">
+                <div class="song-info">
+                    <p class="song-title">${song.title}</p>
+                    <p class="song-artist">${song.artist || 'Unknown Artist'}</p>
+                </div>
+                <p class="song-duration" id="duration-${song.id}">...</p>
+                <button class="add-to-playlist" 
+                    onclick="addToPlaylist(${song.id}, '${song.title}', '${song.artist || 'Unknown Artist'}')" 
+                    ${isAuthenticated ? '' : 'disabled'}>
+                    Add to Playlist
+                </button>
+            </div>
+        `).join('');
+        
+        songSlider.innerHTML = songsHtml;
 
-  function selectGenre(genre) {
-      // Update active button state
-      document.querySelectorAll('.genre-button').forEach(button => {
-          button.classList.remove('active');
-          if (button.textContent === genre) {
-              button.classList.add('active');
-          }
-      });
+        for (const song of songsArray) {
+            const duration = await getSongDuration(song.id);
+            const durationElement = document.getElementById(`duration-${song.id}`);
+            if (durationElement) {
+                durationElement.textContent = duration;
+            }
+        }
+    }
 
-      // Load songs for selected genre
-      loadSongs(genre);
-  }
+    function addToPlaylist(id, title, artist) {
+        if (!isAuthenticated) {
+            alert('You need to log in to add songs to your playlist.');
+            return;
+        }
+        playlist.push({ id, title, artist });
+        updatePlaylist();
+    }
 
-  function playSong(id) {
-      const audioPlayer = document.querySelector('audio');
-      if (audioPlayer) {
-          audioPlayer.src = `${API_BASE_URL}/audio/${id}`;
-          audioPlayer.play().catch(error => {
-              console.error('Error playing audio:', error);
-          });
-      }
-  }
+    function removeFromPlaylist(index) {
+        playlist.splice(index, 1);
+        updatePlaylist();
+    }
 
-  // Initialize everything when the script loads
-  createGenreButtons();
-  loadSongs('Mixed');
-</script>
+    function updatePlaylist() {
+        const playlistContainer = document.getElementById('playlist');
+        
+        if (playlist.length === 0) {
+            playlistContainer.innerHTML = `<p>No songs in your playlist yet.</p>`;
+            return;
+        }
+        
+        const playlistHtml = playlist.map((song, index) => `
+            <div class="playlist-song">
+                <span>${song.title} - ${song.artist}</span>
+                <span class="remove-song" onclick="removeFromPlaylist(${index})">Remove</span>
+            </div>
+        `).join('');
+        
+        playlistContainer.innerHTML = playlistHtml;
+    }
+
+    function selectGenre(genre) {
+        document.querySelectorAll('.genre-button').forEach(button => {
+            button.classList.remove('active');
+            if (button.textContent === genre) {
+                button.classList.add('active');
+            }
+        });
+        loadSongs(genre);
+    }
+
+    // Initialize everything when the script loads
+    checkAuthentication().then(() => {
+        createGenreButtons();
+        loadSongs('Mixed');
+    });
+  </script>
+</body>
+</html>
