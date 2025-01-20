@@ -9,7 +9,7 @@ const port = 8000;
 app.use(cors());
 app.use(express.json()); // Parse JSON requests
 
-const db = new sqlite3.Database("db/music1.db" ,(err) => {
+const db = new sqlite3.Database("db/music1.db", (err) => {
   if (err) {
     console.error("Error creating database:", err.message);
   } else {
@@ -230,7 +230,7 @@ app.post("/login", (req, res) => {
     return res.status(400).send("pseudo and password are required.");
   }
 
-  const query = `SELECT * FROM users WHERE pseudo = ? AND password = ?`;
+  const query = `SELECT id, pseudo, password FROM users WHERE pseudo = ? AND password = ?`;
   dbAuthentificaiton.get(query, [pseudo, password], (err, row) => {
     if (err) {
       console.error("Error querying database:", err.message);
@@ -247,7 +247,7 @@ app.post("/login", (req, res) => {
 
     console.log("User authentificated, redirecting to index.html");
     // if authentification succeeded, redirect to index page
-    res.status(200).json({ message: "Login successful" });
+    res.status(200).json({ message: "Login successful", id: row.id });
   });
 });
 
@@ -281,7 +281,7 @@ function retrieveAllArtists(callback) {
 // Updated function to get artist details
 function retrieveArtistDetails(artistName, callback) {
   const decodedName = decodeURIComponent(artistName);
-  
+
   dbArtists.get(
     `SELECT *,
             (SELECT COUNT(*) FROM json_each(popularSongs)) as songCount
@@ -297,7 +297,7 @@ function retrieveArtistDetails(artistName, callback) {
         try {
           popularSongs = JSON.parse(artist.popularSongs);
         } catch (e) {
-          console.error('Error parsing popularSongs:', e);
+          console.error("Error parsing popularSongs:", e);
         }
         const artistDetails = {
           id: artist.id,
@@ -306,7 +306,7 @@ function retrieveArtistDetails(artistName, callback) {
           funFact: artist.funFact,
           genre: artist.genre,
           popularSongs: popularSongs,
-          songCount: artist.songCount || popularSongs.length
+          songCount: artist.songCount || popularSongs.length,
         };
         callback(null, artistDetails);
       } else {
@@ -329,14 +329,14 @@ app.get("/artists", (req, res) => {
 
 app.get("/artists/:name", (req, res) => {
   const artistName = req.params.name;
-  console.log('Received request for artist:', artistName);
-  
+  console.log("Received request for artist:", artistName);
+
   retrieveArtistDetails(artistName, (err, data) => {
     if (err) {
-      console.error('Error:', err);
+      console.error("Error:", err);
       res.status(500).send("Error retrieving artist details");
     } else if (!data) {
-      console.log('No artist found with name:', artistName);
+      console.log("No artist found with name:", artistName);
       res.status(404).send("Artist not found");
     } else {
       res.json(data);
