@@ -21,6 +21,11 @@ a:hover {
   background-color: transparent;
 }
 
+.container {
+  display: grid;
+  grid-template-rows: 1fr 6fr 1fr;
+}
+
 .btn-group {
   display: flex;
   flex-direction: row;
@@ -130,14 +135,6 @@ body {
 #content-container {
   overflow-y: auto;
   overflow: hidden;
-  display: flex;
-  flex-direction: column; /* Display songs vertically */
-  gap: 10px; /* Adjust gap as needed */
-  border: 2px solid #111; /* Add border */
-  border-radius: 8px; /* Add border radius */
-  padding: 10px; /* Add padding */
-  background-color: #f8f9fa; /* Optional: Add background color */
-  flex-grow: 1; /* Make the song slider grow to fill the available space */
 }
 
 .music-player {
@@ -345,4 +342,45 @@ body {
   font-size: 14px;
   color: #666;
   margin-left: auto;
+}
+
+/* playlists css */
+.playlists-container {
+  display: flex;
+}
+
+.playlists-name {
+  width: 200px;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+}
+
+.playlists-name ul {
+  list-style: none;
+  padding: 0;
+}
+
+.playlists-name li {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.playlists-name li:hover {
+  background-color: #f0f0f0;
+}
+
+.playlists-content {
+  flex-grow: 1;
+  padding: 10px;
+}
+
+.playlists-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.playlists-content li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }

@@ -9,7 +9,7 @@ const port = 8000;
 app.use(cors());
 app.use(express.json()); // Parse JSON requests
 
-const db = new sqlite3.Database("db/music1.db" ,(err) => {
+const db = new sqlite3.Database("db/music1.db", (err) => {
   if (err) {
     console.error("Error creating database:", err.message);
   } else {
@@ -224,7 +224,7 @@ app.post("/signup", (req, res) => {
 // Log in route
 app.post("/login", (req, res) => {
   const { pseudo, password } = req.body;
-  //const { password } = req.body;
+  // const { password } = req.body;
 
   if (!pseudo || !password) {
     return res.status(400).send("pseudo and password are required.");
@@ -248,6 +248,40 @@ app.post("/login", (req, res) => {
     console.log("User authentificated, redirecting to index.html");
     // if authentification succeeded, redirect to index page
     res.status(200).json({ message: "Login successful" });
+  });
+});
+
+// Connect to the database
+const playlistDb = new sqlite3.Database("./db/playlistDB.sqlite", (err) => {
+  if (err) {
+    console.error("Error opening database:", err.message);
+  } else {
+    console.log("Connected to the database db/playlistDB.sqlite");
+  }
+});
+
+// Insert genres into the genres table
+const genres = ["Rock", "Pop", "Jazz", "Classical", "Hip-Hop"];
+const placeholders = genres.map(() => "(?)").join(",");
+const sql = `INSERT INTO genres (name) VALUES ${placeholders}`;
+
+playlistDb.run(sql, genres, (err) => {
+  if (err) {
+    console.error("Error inserting genres:", err.message);
+  } else {
+    console.log("Genres inserted successfully.");
+  }
+});
+
+// Define the /genres endpoint
+app.get("/genres", (req, res) => {
+  playlistDb.all("SELECT * FROM genres", (err, rows) => {
+    if (err) {
+      res.status(500).send("Error retrieving genres");
+      console.error(err.message);
+    } else {
+      res.json(rows);
+    }
   });
 });
 
