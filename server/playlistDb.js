@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPath = path.resolve(__dirname, "db.sqlite");
+const dbPath = path.resolve(__dirname, "playlistDB.sqlite");
 let database;
 
 if (!fs.existsSync(dbPath)) {

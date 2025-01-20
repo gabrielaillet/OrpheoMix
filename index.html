@@ -3,61 +3,110 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index Page</title>
-    <!-- Bootstrap CSS -->
-    <link
-    href="css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+    <title>OrpheoMix</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/index.css" />
   </head>
-  <body>
-    <h1 class="text-center mb-4">Welcome to the Index Page</h1>
 
-    <div
-      class="movable-container container-fluid"
-      role="group"
-      id="movableContainer"
-    >
+  <body>
+    <div class="container-fluid fixed-top bg-light" role="group">
       <div class="row">
-        <div class="col">
-          <a
-            href="/html/firstpage.html"
-            class="button-56"
-            role="button"
-            onclick="moveContainer(event, '/firstPage.html')"
+        <div class="col-12 col-md-4 text-center">
+          <a href="/html/artistes.html" class="button-56" id="artistes-button"
             >Artistes</a
           >
         </div>
-        <div class="col">
-          <a href="/nextpage.html" class="button-56" role="button" onclick="moveContainer(event, '/nextpage.html')">Sons</a>
+        <div class="col-12 col-md-4 text-center">
+          <a href="/html/sons.html" class="button-56" id="sons-button">Sons</a>
         </div>
-        <div class="col">
-          <a
-            href="/index.html"
-            class="button-56"
-            role="button"
-            onclick="moveContainer(event, '/firstpage.html')"
+        <div class="col-12 col-md-4 text-center">
+          <a href="/html/playlists.html" class="button-56" id="playlists-button"
             >Mes Playlists</a
           >
         </div>
       </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="/js/bootstrap.bundle.min.js"></script>
+    <div class="main-content d-flex flex-column">
+      <div
+        id="content-container"
+        class="container mt-5 pt-5 flex-grow-1"
+        style="margin-top: 100px"
+      ></div>
+      <!-- Adjust margin-top to ensure separation -->
+
+      <!-- Music Player -->
+      <div class="music-player d-flex align-items-center">
+        <img id="cover" alt="Album Cover" lass="album-cover">
+        <div class="track-info">
+          <h2 id="title">Song Title</h2>
+          <p id="artist">Artist Name</p>
+        </div>
+        <div class="progress-container ml-3 flex-grow-1">
+          <div class="time-info d-flex justify-content-between">
+            <span id="currentTime">0:00</span>
+            <span id="totalTime">0:00</span>
+          </div>
+          <div class="progress-bar">
+            <span id="progress"></span>
+          </div>
+        </div>
+        <div class="controls ml-3">
+          <button id="previous">&#9664;&#9664;</button>
+          <button id="playPauseButton">&#9654;</button>
+          <button id="next">&#9654;&#9654;</button>
+        </div>
+      </div>
+    </div>
+    <audio id="audioPlayer"></audio>
+    <script src="/js/playAudio.js"></script>
     <script>
-      function moveContainer(event, targetUrl) {
-        event.preventDefault(); // Prevent the default navigation
-
-        const container = document.getElementById("movableContainer");
-        container.classList.add("move-to-top"); // Add the class to trigger animation
-
-        // Navigate after the animation completes
-        setTimeout(() => {
-          window.location.href = targetUrl;
-        }, 800); // Match the duration of the CSS transition (0.8s)
+      // Function to load content dynamically
+      function loadContent(url, buttonId) {
+        fetch(url)
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("content-container").innerHTML = data;
+            setActiveButton(buttonId);
+          })
+          .catch((error) => console.error("Error loading content:", error));
       }
+
+      // Function to set the active button
+      function setActiveButton(buttonId) {
+        document.querySelectorAll(".button-56").forEach((button) => {
+          button.classList.remove("active");
+        });
+        document.getElementById(buttonId).classList.add("active");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .getElementById("artistes-button")
+          .addEventListener("click", (event) => {
+            event.preventDefault();
+            loadContent("/html/artistes.html", "artistes-button");
+          });
+
+        document
+          .getElementById("sons-button")
+          .addEventListener("click", (event) => {
+            event.preventDefault();
+            loadContent("/html/sons.html", "sons-button");
+          });
+
+        document
+          .getElementById("playlists-button")
+          .addEventListener("click", (event) => {
+            event.preventDefault();
+            loadContent("/html/playlists.html", "playlists-button");
+          });
+
+        // Load initial content
+        loadContent("/html/accueil.html", null);
+      });
     </script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+
