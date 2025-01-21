@@ -1,6 +1,7 @@
 <div class="playlists-container">
   <div class="playlists-name">
     <h3>My Playlists</h3>
+    <button id="createPlaylistBtn">Create new playlist</button>
     <div class="playlists-scroll">
       <ul id="playlistsList">
         <!-- Playlists will be loaded here -->
@@ -13,6 +14,7 @@
       <ul id="songsList">
         <!-- Songs will be loaded here -->
       </ul>
+      <button id="deletePlaylistButton" style="display: none;">Delete this playlist</button>
     </div>
   </div>
 </div>
@@ -20,6 +22,58 @@
 <script>
   const API_BASE_URL = 'http://localhost:8000';
   const userId = localStorage.getItem("userId"); // You should get this from your authentication system
+
+  async function deletePlaylist(playlistId) {
+    const reallySure = confirm('Do you reaaaally want to delete this playlist ?');
+    
+    if (reallySure) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/playlists/${userId}/delete`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ playlistId: playlistId}),
+        });
+
+        if (response.ok) {
+          loadPlaylists(); // Reload playlists to include the newly created one
+          document.getElementById('selectedPlaylistTitle').textContent = "Select a playlist";
+          document.getElementById('deletePlaylistButton').style.display = 'none';
+        } else {
+          console.error('Failed to delete playlist');
+        }
+      } catch (error) {
+        console.error('Error deleting playlist:', error);
+      }
+    }
+  }
+
+  document.getElementById('createPlaylistBtn').addEventListener('click', createPlaylist);
+  async function createPlaylist() {
+    const playlistTitle = prompt('Enter a name for your new playlist:');
+    
+    if (playlistTitle) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/playlists/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ title: playlistTitle}),
+        });
+
+        if (response.ok) {
+          const newPlaylist = await response.json();
+          loadPlaylists(); // Reload playlists to include the newly created one
+        } else {
+          console.error('Failed to create playlist');
+        }
+      } catch (error) {
+        console.error('Error creating playlist:', error);
+      }
+    }
+  }
 
   async function loadPlaylists() {
     try {
@@ -62,6 +116,8 @@
         li.addEventListener('click', () => playSong(song.id));
         songsList.appendChild(li);
       });
+      document.getElementById('deletePlaylistButton').onclick = () => deletePlaylist(playlistId);
+      document.getElementById('deletePlaylistButton').style.display = 'block';
     } catch (error) {
       console.error('Error loading songs:', error);
     }
