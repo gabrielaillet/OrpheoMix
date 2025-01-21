@@ -14,7 +14,7 @@
       <ul id="songsList">
         <!-- Songs will be loaded here -->
       </ul>
-      <button id="deletePlaylistButton">Delete this playlist</button>
+      <button id="deletePlaylistButton" style="display: none;">Delete this playlist</button>
     </div>
   </div>
 </div>
@@ -38,6 +38,8 @@
 
         if (response.ok) {
           loadPlaylists(); // Reload playlists to include the newly created one
+          document.getElementById('selectedPlaylistTitle').textContent = "Select a playlist";
+          document.getElementById('deletePlaylistButton').style.display = 'none';
         } else {
           console.error('Failed to delete playlist');
         }
@@ -115,6 +117,7 @@
         songsList.appendChild(li);
       });
       document.getElementById('deletePlaylistButton').onclick = () => deletePlaylist(playlistId);
+      document.getElementById('deletePlaylistButton').style.display = 'block';
     } catch (error) {
       console.error('Error loading songs:', error);
     }
