@@ -224,7 +224,7 @@ app.post("/signup", (req, res) => {
 // Log in route
 app.post("/login", (req, res) => {
   const { pseudo, password } = req.body;
-  //const { password } = req.body;
+  // const { password } = req.body;
 
   if (!pseudo || !password) {
     return res.status(400).send("pseudo and password are required.");
@@ -249,6 +249,74 @@ app.post("/login", (req, res) => {
     // if authentification succeeded, redirect to index page
     res.status(200).json({ message: "Login successful", id: row.id });
   });
+});
+
+// Connect to the database
+const playlistDb = new sqlite3.Database("./db/playlistDB.sqlite", (err) => {
+  if (err) {
+    console.error("Error opening database:", err.message);
+  } else {
+    console.log("Connected to the database db/playlistDB.sqlite");
+  }
+});
+
+// Insert genres into the genres table
+const genres = ["Rock", "Pop", "Jazz", "Classical", "Hip-Hop"];
+const placeholders = genres.map(() => "(?)").join(",");
+const sql = `INSERT INTO genres (name) VALUES ${placeholders}`;
+
+playlistDb.run(sql, genres, (err) => {
+  if (err) {
+    console.error("Error inserting genres:", err.message);
+  } else {
+    console.log("Genres inserted successfully.");
+  }
+});
+
+// Define the /genres endpoint
+app.get("/genres", (req, res) => {
+  playlistDb.all("SELECT * FROM genres", (err, rows) => {
+    if (err) {
+      res.status(500).send("Error retrieving genres");
+      console.error(err.message);
+    } else {
+      res.json(rows);
+    }
+  });
+});
+
+// Get user's playlists
+app.get("/playlists/:userId/playlists", (req, res) => {
+  const userId = req.params.userId;
+  playlistDb.all(
+    "SELECT * FROM playlists WHERE ownerId = ?",
+    [userId],
+    (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: "Error fetching playlists" });
+      } else {
+        res.json(rows);
+      }
+    }
+  );
+});
+
+// Get playlist songs
+app.get("/playlists/:playlistId", (req, res) => {
+  const playlistId = req.params.playlistId;
+  playlistDb.all(
+    `SELECT songs.* FROM songs 
+     JOIN playlist_songs ON songs.id = playlist_songs.songId 
+     WHERE playlist_songs.playlistId = ?`,
+    [playlistId],
+    (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: "Error fetching playlist songs" });
+      } else {
+        res.json(rows);
+      }
+    }
+  );
 });
 
 // First, add a new database connection for artists
@@ -354,6 +422,81 @@ app.get("/debug/artists", (req, res) => {
     }
   });
 });
+
+// Add dummy data for testing playlists
+function insertDummyPlaylistData() {
+  // Insert test users
+  playlistDb.run(
+    `INSERT OR IGNORE INTO users (id, username) VALUES (1, 'testUser')`
+  );
+
+  // Insert test songs
+  const songQueries = [
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (1, 'Bohemian Rhapsody', 'Queen', 354)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (2, 'Hotel California', 'Eagles', 391)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (3, 'Sweet Child O Mine', 'Guns N Roses', 356)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (4, 'Beat It', 'Michael Jackson', 258)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (5, 'Stairway to Heaven', 'Led Zeppelin', 482)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (6, 'Imagine', 'John Lennon', 183)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (7, 'Smells Like Teen Spirit', 'Nirvana', 301)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (8, 'Wonderwall', 'Oasis', 258)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (9, 'Hey Jude', 'The Beatles', 431)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (10, 'Like a Rolling Stone', 'Bob Dylan', 369)`,
+  ];
+
+  // Insert test playlists
+  const playlistQueries = [
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (1, 'Rock Classics', 1)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (2, 'Best Hits', 1)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (3, 'My Favorites', 1)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (4, 'Chill Vibes', 1)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (5, 'Party Mix', 1)`,
+  ];
+
+  // Insert playlist-song relationships
+  const playlistSongQueries = [
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 1)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 2)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 3)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 4)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 5)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 6)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 7)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 8)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 9)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 10)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 1)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 3)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 5)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 7)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 9)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 2)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 4)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 6)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 8)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 10)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 1)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 2)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 3)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 4)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 5)`,
+  ];
+
+  // Execute all queries
+  const queries = [...songQueries, ...playlistQueries, ...playlistSongQueries];
+  queries.forEach((query) => {
+    playlistDb.run(query, (err) => {
+      if (err) {
+        console.error("Error inserting dummy data:", err.message);
+      }
+    });
+  });
+
+  console.log("Dummy playlist data inserted successfully");
+}
+
+// Call this function after database connection
+insertDummyPlaylistData();
 
 app.listen(port, () => {
   console.log("Server app listening on port " + port);

@@ -1,4 +1,78 @@
-<div>
-  <h2>Mes Playlists</h2>
-  <p>Content for Mes Playlists</p>
+<div class="playlists-container">
+  <div class="playlists-name">
+    <h3>My Playlists</h3>
+    <div class="playlists-scroll">
+      <ul id="playlistsList">
+        <!-- Playlists will be loaded here -->
+      </ul>
+    </div>
+  </div>
+  <div class="playlists-content">
+    <h3 id="selectedPlaylistTitle">Select a playlist</h3>
+    <div class="songs-scroll">
+      <ul id="songsList">
+        <!-- Songs will be loaded here -->
+      </ul>
+    </div>
+  </div>
 </div>
+
+<script>
+  const API_BASE_URL = 'http://localhost:8000';
+  const userId = 1; // You should get this from your authentication system
+
+  async function loadPlaylists() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/playlists/${userId}/playlists`);
+      const playlists = await response.json();
+
+      const playlistsList = document.getElementById('playlistsList');
+      playlistsList.innerHTML = '';
+
+      playlists.forEach(playlist => {
+        const li = document.createElement('li');
+        li.textContent = playlist.title;
+        li.addEventListener('click', () => loadPlaylistSongs(playlist.id, playlist.title));
+        playlistsList.appendChild(li);
+      });
+    } catch (error) {
+      console.error('Error loading playlists:', error);
+    }
+  }
+
+  async function loadPlaylistSongs(playlistId, playlistTitle) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/playlists/${playlistId}`);
+      const songs = await response.json();
+
+      document.getElementById('selectedPlaylistTitle').textContent = playlistTitle;
+      const songsList = document.getElementById('songsList');
+      songsList.innerHTML = '';
+
+      songs.forEach(song => {
+        const li = document.createElement('li');
+        li.className = 'song-item';
+        li.innerHTML = `
+        <div class="song-info">
+          <span class="song-title">${song.title}</span>
+          <span class="song-artist">${song.artist}</span>
+        </div>
+        <span class="song-duration">${formatDuration(song.duration)}</span>
+      `;
+        li.addEventListener('click', () => playSong(song.id));
+        songsList.appendChild(li);
+      });
+    } catch (error) {
+      console.error('Error loading songs:', error);
+    }
+  }
+
+  function formatDuration(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
+
+  loadPlaylists();
+
+</script>
