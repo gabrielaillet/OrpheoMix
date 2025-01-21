@@ -142,13 +142,14 @@ app.get("/audio/:trackId", (req, res) => {
   const trackId = req.params.trackId; // Récupère l'ID de la piste audio
 
   // Récupérer le fichier audio BLOB depuis la base de données
-  db.get("SELECT audio FROM tracks WHERE id = ?", [trackId], (err, row) => {
+  db.get("SELECT audio, title FROM tracks WHERE id = ?", [trackId], (err, row) => {
     if (err) {
       res.status(500).send("Erreur lors de la récupération du fichier audio.");
       console.error(err);
     } else if (!row) {
       res.status(404).send("Aucune piste trouvée avec cet ID.");
     } else {
+      res.setHeader('Content-Disposition', `attachment; filename="${row.title}.mp3"`);
       // Envoie le fichier BLOB au client avec le bon type MIME
       res.setHeader("Content-Type", "audio/mpeg"); // Type MIME pour les fichiers MP3
       res.send(row.audio); // Envoie le BLOB du fichier MP3
