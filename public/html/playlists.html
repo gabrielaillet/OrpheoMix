@@ -19,7 +19,7 @@
 
 <script>
   const API_BASE_URL = 'http://localhost:8000';
-  const userId = 1; // You should get this from your authentication system
+  const userId = localStorage.getItem("userId"); // You should get this from your authentication system
 
   async function loadPlaylists() {
     try {
