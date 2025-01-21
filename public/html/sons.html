@@ -90,6 +90,7 @@
                   <p class="song-artist">${song.artist || 'Unknown Artist'}</p>
               </div>
               <p class="song-duration" id="duration-${song.id}">...</p>
+              <a href="${API_BASE_URL}/audio/${song.id}" class="song-download" download>Télécharger</a>
           </div>
       `).join('');
       
