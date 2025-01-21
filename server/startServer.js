@@ -498,6 +498,35 @@ function insertDummyPlaylistData() {
 // Call this function after database connection
 insertDummyPlaylistData();
 
+// Endpoint to retrieve the playlists 
+app.get('/playlists', (req, res) => {
+  db.all(`SELECT id, name FROM playlists`, (err, rows) => {
+    if (err) {
+      res.status(500).send("Error retrieving playlists.");
+    } else {
+      res.json(rows);
+    }
+  });
+});
+
+// Endpoint to add a song to a playlist
+app.post('/playlists/:playlistId/add', (req, res) => {
+  const { playlistId } = req.params;
+  const { songId } = req.body;
+
+  db.run(
+    `INSERT INTO playlist_songs (playlist_id, song_id) VALUES (?, ?)`,
+    [playlistId, songId],
+    function (err) {
+      if (err) {
+        res.status(500).send("Error adding song to playlist.");
+      } else {
+        res.json({ message: "Song added to playlist successfully." });
+      }
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log("Server app listening on port " + port);
 });

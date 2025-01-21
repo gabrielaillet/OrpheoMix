@@ -7,6 +7,17 @@
   </div>
 </div>
 
+<!-- Modale pour les playlists -->
+<div id="playlistModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Add to Playlist</h2>
+      <ul id="playlist-list">
+        <!-- Playlists seront ajoutées dynamiquement -->
+      </ul>
+    </div>
+  </div>
+
 <script>
   const API_BASE_URL = 'http://localhost:8000';
   
@@ -131,4 +142,42 @@
   // Initialize everything when the script loads
   createGenreButtons();
   loadSongs('Mixed');
+
+  async function loadPlaylists(songId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/playlists`);
+    const playlists = await response.json();
+
+    const playlistList = document.getElementById('playlist-list');
+    playlistList.innerHTML = playlists.map(playlist => `
+      <li>
+        <button onclick="addToPlaylist(${playlist.id}, ${songId})">${playlist.name}</button>
+      </li>
+    `).join('');
+  } catch (error) {
+    console.error('Error loading playlists:', error);
+  }
+}
+
+async function addToPlaylist(playlistId, songId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/playlists/${playlistId}/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ songId }),
+    });
+
+    if (response.ok) {
+      alert('Song added to playlist successfully!');
+      closePlaylistModal();
+    } else {
+      alert('Failed to add song to playlist.');
+    }
+  } catch (error) {
+    console.error('Error adding song to playlist:', error);
+  }
+}
+
 </script>
