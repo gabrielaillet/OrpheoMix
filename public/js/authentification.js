@@ -11,7 +11,7 @@ document
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pseudo, password }),
     });
-    console.log(JSON.stringify({ pseudo, password }),)
+    console.log(JSON.stringify({ pseudo, password }));
     const message = await response.text();
     alert(message);
   });
@@ -45,6 +45,7 @@ document
 
         // Redirection if authentication succeeded
         localStorage.setItem("userId", data.id);
+
         window.location.href = "/main";
       })
       .catch((error) => {

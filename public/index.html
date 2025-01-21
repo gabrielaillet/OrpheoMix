@@ -1,289 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OrpheoMix</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/index.css" />
     <link rel="stylesheet" href="/css/sons.css" />
-</head>
-<body>
+  </head>
+  <body>
     <!-- Navigation buttons -->
     <div class="container-fluid fixed-top bg-light" role="group">
-        <div class="row">
-            <div class="col-12 col-md-4 text-center">
-                <a href="#" class="button-56" id="artistes-button">Artistes</a>
-            </div>
-            <div class="col-12 col-md-4 text-center">
-                <a href="#" class="button-56" id="sons-button">Sons</a>
-            </div>
-            <div class="col-12 col-md-4 text-center">
-                <a href="#" class="button-56" id="playlists-button">Mes Playlists</a>
-            </div>
+      <div class="row">
+        <div class="col-12 col-md-4 text-center">
+          <a href="#" class="button-56" id="artistes-button">Artistes</a>
         </div>
-        <div id="userId"></div>
+        <div class="col-12 col-md-4 text-center">
+          <a href="#" class="button-56" id="sons-button">Sons</a>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+          <a href="#" class="button-56" id="playlists-button">Mes Playlists</a>
+        </div>
+      </div>
+      <div id="userId"></div>
     </div>
 
     <div class="main-content d-flex flex-column">
-        <div id="content-container" class="container mt-5 pt-5 flex-grow-1"></div>
-        
-        <!-- Music Player -->
-        <div class="music-player show">
-            <div class="d-flex align-items-center">
-                <!-- Album Art and Track Info -->
-                <img id="current-cover" src="cover.jpeg" alt="Album Cover" class="album-cover">
-                <div class="track-info">
-                    <h3 id="current-title" class="track-title">Select a song</h3>
-                    <p id="current-artist" class="track-artist">-</p>
-                </div>
+      <div id="content-container" class="container mt-5 pt-5 flex-grow-1"></div>
 
-                <!-- Progress Bar -->
-                <div class="progress-container">
-                    <div class="time-info">
-                        <span id="currentTime">0:00</span>
-                        <span id="totalTime">0:00</span>
-                    </div>
-                    <div class="progress-bar-container" id="progressBarContainer">
-                        <div class="progress-bar" id="progress"></div>
-                    </div>
-                </div>
+      <!-- Music Player -->
+      <div class="music-player show">
+        <div class="d-flex align-items-center">
+          <!-- Album Art and Track Info -->
+          <img
+            id="current-cover"
+            src="cover.jpeg"
+            alt="Album Cover"
+            class="album-cover"
+          />
+          <div class="track-info">
+            <h3 id="current-title" class="track-title">Select a song</h3>
+            <p id="current-artist" class="track-artist">-</p>
+          </div>
 
-                <!-- Controls -->
-                <div class="controls">
-                    <button class="control-button" onclick="previousSong()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="11 19 2 12 11 5 11 19"></polygon>
-                            <polygon points="22 19 13 12 22 5 22 19"></polygon>
-                        </svg>
-                    </button>
-                    <button class="control-button play-pause" id="playPauseButton" onclick="togglePlay()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </button>
-                    <button class="control-button" onclick="nextSong()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="13 19 22 12 13 5 13 19"></polygon>
-                            <polygon points="2 19 11 12 2 5 2 19"></polygon>
-                        </svg>
-                    </button>
-                </div>
-
-                    <!-- Volume Control -->
-                    <div class="volume-container">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                        </svg>
-                        <div class="volume-slider">
-                            <div class="volume-level" style="width: 75%"></div>
-                        </div>
-                    </div>
-                </div>
+          <!-- Progress Bar -->
+          <div class="progress-container">
+            <div class="time-info">
+              <span id="currentTime">0:00</span>
+              <span id="totalTime">0:00</span>
             </div>
+            <div class="progress-bar-container" id="progressBarContainer">
+              <div class="progress-bar" id="progress"></div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="controls">
+            <button class="control-button" onclick="previousSong()">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polygon points="11 19 2 12 11 5 11 19"></polygon>
+                <polygon points="22 19 13 12 22 5 22 19"></polygon>
+              </svg>
+            </button>
+            <button
+              class="control-button play-pause"
+              id="playPauseButton"
+              onclick="togglePlay()"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </button>
+            <button class="control-button" onclick="nextSong()">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polygon points="13 19 22 12 13 5 13 19"></polygon>
+                <polygon points="2 19 11 12 2 5 2 19"></polygon>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Volume Control -->
+          <div class="volume-container">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+            <div class="volume-slider">
+              <div class="volume-level" style="width: 75%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <audio id="audioPlayer"></audio>
     <script src="js/userId.js"></script>
+    <script src="js/indexedDb.js"></script>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8000';
-        let currentSongId = null;
-        let playlist = [];
-    
-        // Global function to play a song
-        window.playSong = async function(id) {
-            try {
-                currentSongId = id;
-                const audioPlayer = document.getElementById('audioPlayer');
-                
-                // Update audio source
-                audioPlayer.src = `${API_BASE_URL}/audio/${id}`;
-                
-                // Update player UI
-                const response = await fetch(`${API_BASE_URL}/songs`);
-                const songs = await response.json();
-                const currentSong = songs.find(song => song.id === id);
-                
-                if (currentSong) {
-                    document.getElementById('current-title').textContent = currentSong.title;
-                    document.getElementById('current-artist').textContent = currentSong.artist;
-                    document.getElementById('current-cover').src = `${API_BASE_URL}/cover/${id}`;
-                    
-                    // Store playlist for next/previous functionality
-                    playlist = songs;
-                }
-                
-                // Play the audio and update icon
-                audioPlayer.play()
-                    .then(() => {
-                        updatePlayPauseIcon(true);
-                    })
-                    .catch(error => {
-                        console.error('Error playing audio:', error);
-                    });
-            } catch (error) {
-                console.error('Error updating player:', error);
-            }
-        };
-    
-        // Player control functions
-        function togglePlay() {
-            const audioPlayer = document.getElementById('audioPlayer');
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-                updatePlayPauseIcon(true);
-            } else {
-                audioPlayer.pause();
-                updatePlayPauseIcon(false);
-            }
-        }
-    
-        function updatePlayPauseIcon(isPlaying) {
-            const button = document.getElementById('playPauseButton');
-            button.innerHTML = isPlaying 
-                ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'
-                : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
-        }
-    
-        function previousSong() {
-            if (!currentSongId || playlist.length === 0) return;
-            
-            const currentIndex = playlist.findIndex(song => song.id === currentSongId);
-            if (currentIndex > 0) {
-                playSong(playlist[currentIndex - 1].id);
-            }
-        }
-    
-        function nextSong() {
-            if (!currentSongId || playlist.length === 0) return;
-            
-            const currentIndex = playlist.findIndex(song => song.id === currentSongId);
-            if (currentIndex < playlist.length - 1) {
-                playSong(playlist[currentIndex + 1].id);
-            }
-        }
-    
-        // Progress bar interaction
-        const progressBarContainer = document.getElementById('progressBarContainer');
-        if (progressBarContainer) {
-            progressBarContainer.addEventListener('click', (e) => {
-                const bounds = progressBarContainer.getBoundingClientRect();
-                const x = e.clientX - bounds.left;
-                const percentage = x / bounds.width;
-                audioPlayer.currentTime = percentage * audioPlayer.duration;
+      const API_BASE_URL = "http://localhost:8000";
+      let currentSongId = null;
+      let playlist = [];
+
+      // Global function to play a song
+      window.playSong = async function (id) {
+        try {
+          currentSongId = id;
+
+          const audioPlayer = document.getElementById("audioPlayer");
+
+          // Try to load the song from IndexedDB
+          try {
+            await loadSongFromIndexedDB(id);
+          } catch (error) {
+            // If not found in IndexedDB, fetch and store it
+            console.log(`Fetching song ${id} from server.`);
+            const songUrl = `${API_BASE_URL}/audio/${id}`;
+
+            await storeSongInIndexedDB(id, songUrl);
+            await loadSongFromIndexedDB(id); // Play after storing
+          }
+
+          // Update player UI
+          const response = await fetch(`${API_BASE_URL}/songs`);
+          const songs = await response.json();
+          const currentSong = songs.find((song) => song.id === id);
+
+          if (currentSong) {
+            document.getElementById("current-title").textContent =
+              currentSong.title;
+            document.getElementById("current-artist").textContent =
+              currentSong.artist;
+            document.getElementById(
+              "current-cover"
+            ).src = `${API_BASE_URL}/cover/${id}`;
+
+            playlist = songs;
+          }
+          audioPlayer
+            .play()
+            .then(() => {
+              updatePlayPauseIcon(true);
+            })
+            .catch((error) => {
+              console.error("Error playing audio:", error);
             });
+        } catch (error) {
+          console.error("Error playing song:", error);
         }
-    
-        // Volume control
-        const volumeSlider = document.querySelector('.volume-slider');
-        if (volumeSlider) {
-            volumeSlider.addEventListener('click', (e) => {
-                const bounds = volumeSlider.getBoundingClientRect();
-                const x = e.clientX - bounds.left;
-                const percentage = x / bounds.width;
-                audioPlayer.volume = Math.max(0, Math.min(1, percentage));
-                document.querySelector('.volume-level').style.width = `${percentage * 100}%`;
-            });
+      };
+
+      // Player control functions
+      function togglePlay() {
+        const audioPlayer = document.getElementById("audioPlayer");
+        if (audioPlayer.paused) {
+          audioPlayer.play();
+          updatePlayPauseIcon(true);
+        } else {
+          audioPlayer.pause();
+          updatePlayPauseIcon(false);
         }
-    
-        // Update progress bar
-        document.getElementById('audioPlayer').addEventListener('timeupdate', function() {
-            const currentTime = document.getElementById('currentTime');
-            const totalTime = document.getElementById('totalTime');
-            const progress = document.getElementById('progress');
-            
-            if (currentTime && totalTime && progress) {
-                const minutes = Math.floor(this.currentTime / 60);
-                const seconds = Math.floor(this.currentTime % 60);
-                currentTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                
-                if (!isNaN(this.duration)) {
-                    const totalMinutes = Math.floor(this.duration / 60);
-                    const totalSeconds = Math.floor(this.duration % 60);
-                    totalTime.textContent = `${totalMinutes}:${totalSeconds.toString().padStart(2, '0')}`;
-                    
-                    const progressPercent = (this.currentTime / this.duration) * 100;
-                    progress.style.width = `${progressPercent}%`;
-                }
-            }
+      }
+
+      function updatePlayPauseIcon(isPlaying) {
+        const button = document.getElementById("playPauseButton");
+        button.innerHTML = isPlaying
+          ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'
+          : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+      }
+
+      function previousSong() {
+        if (!currentSongId || playlist.length === 0) return;
+
+        const currentIndex = playlist.findIndex(
+          (song) => song.id === currentSongId
+        );
+        if (currentIndex > 0) {
+          playSong(playlist[currentIndex - 1].id);
+        }
+      }
+
+      function nextSong() {
+        if (!currentSongId || playlist.length === 0) return;
+
+        const currentIndex = playlist.findIndex(
+          (song) => song.id === currentSongId
+        );
+        if (currentIndex < playlist.length - 1) {
+          playSong(playlist[currentIndex + 1].id);
+        }
+      }
+
+      // Progress bar interaction
+      const progressBarContainer = document.getElementById(
+        "progressBarContainer"
+      );
+      if (progressBarContainer) {
+        progressBarContainer.addEventListener("click", (e) => {
+          const bounds = progressBarContainer.getBoundingClientRect();
+          const x = e.clientX - bounds.left;
+          const percentage = x / bounds.width;
+          audioPlayer.currentTime = percentage * audioPlayer.duration;
         });
-    
-        // Auto-play next song when current song ends
-        document.getElementById('audioPlayer').addEventListener('ended', function() {
-            nextSong();
+      }
+
+      // Volume control
+      const volumeSlider = document.querySelector(".volume-slider");
+      if (volumeSlider) {
+        volumeSlider.addEventListener("click", (e) => {
+          const bounds = volumeSlider.getBoundingClientRect();
+          const x = e.clientX - bounds.left;
+          const percentage = x / bounds.width;
+          audioPlayer.volume = Math.max(0, Math.min(1, percentage));
+          document.querySelector(".volume-level").style.width = `${
+            percentage * 100
+          }%`;
         });
-    
-        // Content loading function
-        function loadContent(url, buttonId) {
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    const container = document.getElementById('content-container');
-                    container.innerHTML = data;
-                    
-                    // Execute any scripts in the loaded content
-                    const scripts = container.getElementsByTagName('script');
-                    for (let script of scripts) {
-                        eval(script.innerText);
-                    }
-                    
-                    setActiveButton(buttonId);
-                })
-                .catch(error => {
-                    console.error('Error loading content:', error);
-                    document.getElementById('content-container').innerHTML = 
-                        '<p>Error loading content. Please try again.</p>';
-                });
-        }
-    
-        // Function to set the active button
-        function setActiveButton(buttonId) {
-            document.querySelectorAll('.button-56').forEach(button => {
-                button.classList.remove('active');
-            });
-            document.getElementById(buttonId).classList.add('active');
-        }
-    
-        // Initialize keyboard controls
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                togglePlay();
-            } else if (e.code === 'ArrowLeft') {
-                previousSong();
-            } else if (e.code === 'ArrowRight') {
-                nextSong();
+      }
+
+      // Update progress bar
+      document
+        .getElementById("audioPlayer")
+        .addEventListener("timeupdate", function () {
+          const currentTime = document.getElementById("currentTime");
+          const totalTime = document.getElementById("totalTime");
+          const progress = document.getElementById("progress");
+
+          if (currentTime && totalTime && progress) {
+            const minutes = Math.floor(this.currentTime / 60);
+            const seconds = Math.floor(this.currentTime % 60);
+            currentTime.textContent = `${minutes}:${seconds
+              .toString()
+              .padStart(2, "0")}`;
+
+            if (!isNaN(this.duration)) {
+              const totalMinutes = Math.floor(this.duration / 60);
+              const totalSeconds = Math.floor(this.duration % 60);
+              totalTime.textContent = `${totalMinutes}:${totalSeconds
+                .toString()
+                .padStart(2, "0")}`;
+
+              const progressPercent = (this.currentTime / this.duration) * 100;
+              progress.style.width = `${progressPercent}%`;
             }
+          }
         });
-    
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', () => {
-            // Add event listeners for navigation buttons
-            document.getElementById('artistes-button').addEventListener('click', event => {
-                event.preventDefault();
-                loadContent('/html/artistes.html', 'artistes-button');
-            });
-    
-            document.getElementById('sons-button').addEventListener('click', event => {
-                event.preventDefault();
-                loadContent('/html/sons.html', 'sons-button');
-            });
-    
-            document.getElementById('playlists-button').addEventListener('click', event => {
-                event.preventDefault();
-                loadContent('/html/playlists.html', 'playlists-button');
-            });
-    
-            // Load initial content
-            loadContent('/html/sons.html', 'sons-button');
+
+      // Auto-play next song when current song ends
+      document
+        .getElementById("audioPlayer")
+        .addEventListener("ended", function () {
+          nextSong();
         });
+
+      // Content loading function
+      function loadContent(url, buttonId) {
+        fetch(url)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+          })
+          .then((data) => {
+            const container = document.getElementById("content-container");
+            container.innerHTML = data;
+
+            // Execute any scripts in the loaded content
+            const scripts = container.getElementsByTagName("script");
+            for (let script of scripts) {
+              eval(script.innerText);
+            }
+
+            setActiveButton(buttonId);
+          })
+          .catch((error) => {
+            console.error("Error loading content:", error);
+            document.getElementById("content-container").innerHTML =
+              "<p>Error loading content. Please try again.</p>";
+          });
+      }
+
+      // Function to set the active button
+      function setActiveButton(buttonId) {
+        document.querySelectorAll(".button-56").forEach((button) => {
+          button.classList.remove("active");
+        });
+        document.getElementById(buttonId).classList.add("active");
+      }
+
+      // Initialize keyboard controls
+      document.addEventListener("keydown", (e) => {
+        if (e.code === "Space") {
+          e.preventDefault();
+          togglePlay();
+        } else if (e.code === "ArrowLeft") {
+          previousSong();
+        } else if (e.code === "ArrowRight") {
+          nextSong();
+        }
+      });
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", () => {
+        // Add event listeners for navigation buttons
+        document
+          .getElementById("artistes-button")
+          .addEventListener("click", (event) => {
+            event.preventDefault();
+            loadContent("/html/artistes.html", "artistes-button");
+          });
+
+        document
+          .getElementById("sons-button")
+          .addEventListener("click", (event) => {
+            event.preventDefault();
+            loadContent("/html/sons.html", "sons-button");
+          });
+
+        document
+          .getElementById("playlists-button")
+          .addEventListener("click", (event) => {
+            event.preventDefault();
+            loadContent("/html/playlists.html", "playlists-button");
+          });
+
+        // Load initial content
+        loadContent("/html/sons.html", "sons-button");
+      });
     </script>
-</body>
+  </body>
 </html>
