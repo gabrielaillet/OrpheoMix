@@ -499,15 +499,23 @@ function insertDummyPlaylistData() {
 insertDummyPlaylistData();
 
 // Endpoint to retrieve the playlists 
-app.get('/playlists', (req, res) => {
-  db.all(`SELECT id, name FROM playlists`, (err, rows) => {
-    if (err) {
-      res.status(500).send("Error retrieving playlists.");
-    } else {
-      res.json(rows);
+app.get("/playlists", (req, res) => {
+  playlistDb.all(
+    `SELECT id, title FROM playlists`,
+    [],
+    (err, rows) => {
+      if (err) {
+        console.error("Database error:", err);
+        res.status(500).json({ error: "An unexpected error occurred" });
+      } else if (rows.length === 0) {
+        res.status(404).json({ message: "No playlists found" });
+      } else {
+        res.json(rows);
+      }
     }
-  });
+  );
 });
+
 
 // Endpoint to add a song to a playlist
 app.post('/playlists/:playlistId/add', (req, res) => {

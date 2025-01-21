@@ -190,14 +190,10 @@ function openPlaylistModal(songId) {
     const modal = document.getElementById('playlistModal');
     modal.style.display = 'block';
 
-    // to close the modal page
+    // to close the modal
     const closeModalButton = modal.querySelector('.close');
     closeModalButton.onclick = () => closePlaylistModal();
 }
 
-function closePlaylistModal() {
-    const modal = document.getElementById('playlistModal');
-    modal.style.display = 'none';
-}
 
 </script>
