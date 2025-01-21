@@ -285,6 +285,23 @@ app.post("/playlists/:userId", (req, res) => {
   )
 })
 
+app.post("/playlists/:userId/delete", (req, res) => {
+  const { playlistId } = req.body;
+  db.run(
+    'DELETE FROM playlists WHERE id = ?',
+    [playlistId],
+    function (err) {
+      if (err) {
+        console.error("Error deleting playlist:", err.message);
+        return res.status(500).send("Error deleting playlist.");
+      }
+      res
+        .status(200)
+        .send({ message: "Playlist deleted successfully" });
+    }
+  );
+});
+
 // First, add a new database connection for artists
 const dbArtists = new sqlite3.Database("db/artists.db", (err) => {
   if (err) {
