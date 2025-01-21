@@ -249,6 +249,19 @@ app.get("/playlists/:userId/playlists", (req, res) => {
   });
 });
 
+
+// Get user's playlists' titles
+app.get("/playlists/:userId/playlists/title", (req, res) => {
+  const userId = req.params.userId;
+  db.all(`SELECT title FROM playlists WHERE ownerId = ?`, [userId], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: "Error fetching playlists" });
+    } else {
+      res.json(rows);
+    }
+  });
+});
+
 // Get playlist songs
 app.get("/playlists/:playlistId", (req, res) => {
   const playlistId = req.params.playlistId;
@@ -300,7 +313,6 @@ function retrieveArtistDetails(artistName, callback) {
 
   dbArtists.get(
     `SELECT *,
-
             (SELECT COUNT(*) FROM json_each(popularSongs)) as songCount
      FROM artists
      WHERE name = ?`,
@@ -463,21 +475,22 @@ app.get("/playlists", (req, res) => {
   );
 });
 
+app.post("/playlists/:userId/add", (req, res) => {
+  const userId = req.params.userId;
+  const { playlistId, songId } = req.body;  
 
-// Endpoint to add a song to a playlist
-app.post('/playlists/:playlistId/add', (req, res) => {
-  const { playlistId } = req.params;
-  const { songId } = req.body;
+  if (!playlistId || !songId) {
+    return res.status(400).json({ error: "Playlist ID and Song ID are required" });
+  }
 
   db.run(
-    `INSERT INTO playlist_songs (playlist_id, song_id) VALUES (?, ?)`,
+    "INSERT INTO playlist_songs (playlistId, songId) VALUES (?, ?)",
     [playlistId, songId],
     function (err) {
       if (err) {
-        res.status(500).send("Error adding song to playlist.");
-      } else {
-        res.json({ message: "Song added to playlist successfully." });
+        return res.status(409).json({ error: "The selected song already exists in this playlist" });
       }
+      res.status(200).json({ message: "Song added to playlist successfully" });
     }
   );
 });
