@@ -267,6 +267,24 @@ app.get("/playlists/:playlistId", (req, res) => {
   );
 });
 
+app.post("/playlists/:userId", (req, res) => {
+  const {title} = req.body;
+  const userId = req.params.userId;
+  db.run(
+    'INSERT INTO playlists (title, ownerId) VALUES (?, ?)',
+      [title, userId],
+      function (err) { 
+        if (err) {
+          console.error("Error creating playlist:", err.message);
+          return res.status(500).send("Error creating playlist.");
+        }
+        res
+          .status(201)
+          .send({ message: "Playlist created successfully", id: this.lastID });
+      }
+  )
+})
+
 // First, add a new database connection for artists
 const dbArtists = new sqlite3.Database("db/artists.db", (err) => {
   if (err) {

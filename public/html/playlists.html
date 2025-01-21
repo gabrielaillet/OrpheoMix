@@ -1,6 +1,7 @@
 <div class="playlists-container">
   <div class="playlists-name">
     <h3>My Playlists</h3>
+    <button id="createPlaylistBtn">Create new playlist</button>
     <div class="playlists-scroll">
       <ul id="playlistsList">
         <!-- Playlists will be loaded here -->
@@ -20,6 +21,32 @@
 <script>
   const API_BASE_URL = 'http://localhost:8000';
   const userId = localStorage.getItem("userId"); // You should get this from your authentication system
+
+  document.getElementById('createPlaylistBtn').addEventListener('click', createPlaylist);
+  async function createPlaylist() {
+    const playlistTitle = prompt('Enter a name for your new playlist:');
+    
+    if (playlistTitle) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/playlists/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ title: playlistTitle}),
+        });
+
+        if (response.ok) {
+          const newPlaylist = await response.json();
+          loadPlaylists(); // Reload playlists to include the newly created one
+        } else {
+          console.error('Failed to create playlist');
+        }
+      } catch (error) {
+        console.error('Error creating playlist:', error);
+      }
+    }
+  }
 
   async function loadPlaylists() {
     try {
