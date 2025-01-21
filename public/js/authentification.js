@@ -41,8 +41,11 @@ document
       })
       .then((data) => {
         console.log(data.message);
+        console.log(data.id);
+
         // Redirection if authentication succeeded
-        window.location.href = "/";
+        localStorage.setItem("userId", data.id);
+        window.location.href = "/main";
       })
       .catch((error) => {
         console.error("Error:", error);
