@@ -437,6 +437,11 @@ function insertDummyPlaylistData() {
     `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (3, 'Sweet Child O Mine', 'Guns N Roses', 356)`,
     `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (4, 'Beat It', 'Michael Jackson', 258)`,
     `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (5, 'Stairway to Heaven', 'Led Zeppelin', 482)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (6, 'Imagine', 'John Lennon', 183)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (7, 'Smells Like Teen Spirit', 'Nirvana', 301)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (8, 'Wonderwall', 'Oasis', 258)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (9, 'Hey Jude', 'The Beatles', 431)`,
+    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (10, 'Like a Rolling Stone', 'Bob Dylan', 369)`,
   ];
 
   // Insert test playlists
@@ -444,6 +449,8 @@ function insertDummyPlaylistData() {
     `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (1, 'Rock Classics', 1)`,
     `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (2, 'Best Hits', 1)`,
     `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (3, 'My Favorites', 1)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (4, 'Chill Vibes', 1)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (5, 'Party Mix', 1)`,
   ];
 
   // Insert playlist-song relationships
@@ -451,10 +458,28 @@ function insertDummyPlaylistData() {
     `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 1)`,
     `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 2)`,
     `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 3)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 1)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 4)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 2)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 4)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 5)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 6)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 7)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 8)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 9)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 10)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 1)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 3)`,
     `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 5)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 7)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 9)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 2)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 4)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 6)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 8)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 10)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 1)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 2)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 3)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 4)`,
+    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 5)`,
   ];
 
   // Execute all queries
