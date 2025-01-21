@@ -101,6 +101,8 @@
                   <p class="song-artist">${song.artist || 'Unknown Artist'}</p>
               </div>
               <p class="song-duration" id="duration-${song.id}">...</p>
+              <button class="add-to-playlist-btn" onclick="openPlaylistModal(${song.id})">Add to Playlist</button>
+        
           </div>
       `).join('');
       
@@ -178,6 +180,24 @@ async function addToPlaylist(playlistId, songId) {
   } catch (error) {
     console.error('Error adding song to playlist:', error);
   }
+}
+
+function openPlaylistModal(songId) {
+   
+    loadPlaylists(songId);
+
+    // Show the modal page
+    const modal = document.getElementById('playlistModal');
+    modal.style.display = 'block';
+
+    // to close the modal page
+    const closeModalButton = modal.querySelector('.close');
+    closeModalButton.onclick = () => closePlaylistModal();
+}
+
+function closePlaylistModal() {
+    const modal = document.getElementById('playlistModal');
+    modal.style.display = 'none';
 }
 
 </script>
