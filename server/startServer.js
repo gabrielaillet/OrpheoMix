@@ -7,19 +7,20 @@ const app = express();
 const port = 8000;
 
 app.use(cors());
-app.use(express.json()); // Parse JSON requests
+app.use(express.json());
 
-const db = new sqlite3.Database("db/music1.db", (err) => {
+// Single database connection
+const db = new sqlite3.Database("db/playlistDB.sqlite", (err) => {
   if (err) {
-    console.error("Error creating database:", err.message);
+    console.error("Error connecting to database:", err.message);
   } else {
-    console.log("COnnected to the database", "db/music1.db");
+    console.log("Connected to the unified database");
   }
 });
 
-// Function to retrieve all tracks from the database
+// Updated function to retrieve all tracks
 function retrieveAll(callback) {
-  db.all(`SELECT * FROM tracks`, (err, rows) => {
+  db.all(`SELECT * FROM songs`, (err, rows) => {
     if (err) {
       console.error(err.message);
       callback(err, null);
@@ -29,8 +30,9 @@ function retrieveAll(callback) {
   });
 }
 
+// Updated function to retrieve text info
 function retrieveText(callback) {
-  db.all(`SELECT id, title, artist FROM tracks`, (err, rows) => {
+  db.all(`SELECT id, title, artist FROM songs`, (err, rows) => {
     if (err) {
       console.error(err.message);
       callback(err, null);
@@ -40,37 +42,39 @@ function retrieveText(callback) {
   });
 }
 
+// Updated function to retrieve by genre
 function retrieveByGenre(genre, callback) {
   db.all(
-    `SELECT id, title, artist FROM tracks WHERE genre = ?`,
+    `SELECT id, title, artist FROM songs WHERE genre = ?`,
     [genre],
     (err, rows) => {
       if (err) {
-        console.error("Error retrieving tracks:", err.message);
+        console.error("Error retrieving songs:", err.message);
         callback(err, null);
       } else if (rows && rows.length > 0) {
         callback(null, rows);
       } else {
-        console.log("No tracks found for the given genre.");
+        console.log("No songs found for the given genre.");
         callback(null, []);
       }
     }
   );
 }
 
+// Updated function to retrieve by ID
 function retrieveById(id, callback) {
   db.get(
-    `SELECT id, title, audio FROM tracks WHERE id = ?`,
+    `SELECT id, title, audio FROM songs WHERE id = ?`,
     [id],
     (err, row) => {
       if (err) {
-        console.error("Error retrieving track:", err.message);
-        callback(err, null); // Passe l'erreur au rappel
+        console.error("Error retrieving song:", err.message);
+        callback(err, null);
       } else if (row) {
-        callback(null, row); // Passe les données au rappel
+        callback(null, row);
       } else {
-        console.log("No track found with the given ID.");
-        callback(null, null); // Indique qu'aucune piste n'a été trouvée
+        console.log("No song found with the given ID.");
+        callback(null, null);
       }
     }
   );
@@ -142,7 +146,7 @@ app.get("/audio/:trackId", (req, res) => {
   const trackId = req.params.trackId; // Récupère l'ID de la piste audio
 
   // Récupérer le fichier audio BLOB depuis la base de données
-  db.get("SELECT audio FROM tracks WHERE id = ?", [trackId], (err, row) => {
+  db.get("SELECT audio FROM songs WHERE id = ?", [trackId], (err, row) => {
     if (err) {
       res.status(500).send("Erreur lors de la récupération du fichier audio.");
       console.error(err);
@@ -160,7 +164,7 @@ app.get("/cover/:trackId", (req, res) => {
   const trackId = req.params.trackId; // Récupère l'ID de la piste
 
   // Récupérer le fichier image BLOB depuis la base de données
-  db.get("SELECT cover FROM tracks WHERE id = ?", [trackId], (err, row) => {
+  db.get("SELECT cover FROM songs WHERE id = ?", [trackId], (err, row) => {
     if (err) {
       res.status(500).send("Erreur lors de la récupération de l'image.");
       console.error(err);
@@ -174,16 +178,7 @@ app.get("/cover/:trackId", (req, res) => {
   });
 });
 
-//authentification
-const dbAuthentificaiton = new sqlite3.Database("db/users.db", (err) => {
-  if (err) {
-    console.error("Error creating database:", err.message);
-  } else {
-    console.log("COnnected to the database", "db/users.db");
-  }
-});
-
-// Route for sign up
+// Updated authentication routes
 app.post("/signup", (req, res) => {
   const { pseudo, password } = req.body;
 
@@ -191,120 +186,73 @@ app.post("/signup", (req, res) => {
     return res.status(400).send("Pseudo and password are required.");
   }
 
-  // Check if the user already exists
-  const checkQuery = `SELECT * FROM users WHERE pseudo = ? `;
-  dbAuthentificaiton.get(checkQuery, [pseudo], (err, row) => {
+  db.get(`SELECT * FROM users WHERE pseudo = ?`, [pseudo], (err, row) => {
     if (err) {
       console.error("Error checking user existence:", err.message);
       return res.status(500).send("Error checking user existence.");
     }
 
     if (row) {
-      // If the user already exists
-      return res
-        .status(400)
-        .send("This pseudo is already taken, use a different one please.");
+      return res.status(400).send("This pseudo is already taken.");
     }
 
-    // If the user does not exist, insert the credentialsinto the database
-    const insertQuery = `INSERT INTO users (pseudo, password) VALUES (?, ?)`;
-    dbAuthentificaiton.run(insertQuery, [pseudo, password], function (err) {
-      if (err) {
-        console.error("Error inserting user:", err.message);
-        return res.status(500).send("Error registering user.");
+    db.run(
+      `INSERT INTO users (pseudo, password) VALUES (?, ?)`,
+      [pseudo, password],
+      function (err) {
+        if (err) {
+          console.error("Error inserting user:", err.message);
+          return res.status(500).send("Error registering user.");
+        }
+        res
+          .status(201)
+          .send({ message: "User registered successfully", id: this.lastID });
       }
-
-      res
-        .status(201)
-        .send({ message: "User registered successfully", id: this.lastID });
-    });
+    );
   });
 });
 
-// Log in route
 app.post("/login", (req, res) => {
   const { pseudo, password } = req.body;
-  // const { password } = req.body;
 
   if (!pseudo || !password) {
-    return res.status(400).send("pseudo and password are required.");
+    return res.status(400).send("Pseudo and password are required.");
   }
 
-  const query = `SELECT id, pseudo, password FROM users WHERE pseudo = ? AND password = ?`;
-  dbAuthentificaiton.get(query, [pseudo, password], (err, row) => {
-    if (err) {
-      console.error("Error querying database:", err.message);
-      return res.status(500).send("Error logging in.");
+  db.get(
+    `SELECT id, pseudo FROM users WHERE pseudo = ? AND password = ?`,
+    [pseudo, password],
+    (err, row) => {
+      if (err) {
+        console.error("Error querying database:", err.message);
+        return res.status(500).send("Error logging in.");
+      }
+
+      if (!row) {
+        return res.status(401).send("Invalid credentials.");
+      }
+
+      res.status(200).json({ message: "Login successful", id: row.id });
     }
-
-    if (!row) {
-      return res
-        .status(401)
-        .send(
-          "Invalid password or pseudo. Try again or sign up if you do not have an account"
-        );
-    }
-
-    console.log("User authentificated, redirecting to index.html");
-    // if authentification succeeded, redirect to index page
-    res.status(200).json({ message: "Login successful", id: row.id });
-  });
+  );
 });
 
-// Connect to the database
-const playlistDb = new sqlite3.Database("./db/playlistDB.sqlite", (err) => {
-  if (err) {
-    console.error("Error opening database:", err.message);
-  } else {
-    console.log("Connected to the database db/playlistDB.sqlite");
-  }
-});
-
-// Insert genres into the genres table
-const genres = ["Rock", "Pop", "Jazz", "Classical", "Hip-Hop"];
-const placeholders = genres.map(() => "(?)").join(",");
-const sql = `INSERT INTO genres (name) VALUES ${placeholders}`;
-
-playlistDb.run(sql, genres, (err) => {
-  if (err) {
-    console.error("Error inserting genres:", err.message);
-  } else {
-    console.log("Genres inserted successfully.");
-  }
-});
-
-// Define the /genres endpoint
-app.get("/genres", (req, res) => {
-  playlistDb.all("SELECT * FROM genres", (err, rows) => {
+// Get user's playlists
+app.get("/playlists/:userId/playlists", (req, res) => {
+  const userId = req.params.userId;
+  db.all("SELECT * FROM playlists WHERE ownerId = ?", [userId], (err, rows) => {
     if (err) {
-      res.status(500).send("Error retrieving genres");
-      console.error(err.message);
+      res.status(500).json({ error: "Error fetching playlists" });
     } else {
       res.json(rows);
     }
   });
 });
 
-// Get user's playlists
-app.get("/playlists/:userId/playlists", (req, res) => {
-  const userId = req.params.userId;
-  playlistDb.all(
-    "SELECT * FROM playlists WHERE ownerId = ?",
-    [userId],
-    (err, rows) => {
-      if (err) {
-        res.status(500).json({ error: "Error fetching playlists" });
-      } else {
-        res.json(rows);
-      }
-    }
-  );
-});
-
 // Get playlist songs
 app.get("/playlists/:playlistId", (req, res) => {
   const playlistId = req.params.playlistId;
-  playlistDb.all(
+  db.all(
     `SELECT songs.* FROM songs 
      JOIN playlist_songs ON songs.id = playlist_songs.songId 
      WHERE playlist_songs.playlistId = ?`,
@@ -352,6 +300,7 @@ function retrieveArtistDetails(artistName, callback) {
 
   dbArtists.get(
     `SELECT *,
+
             (SELECT COUNT(*) FROM json_each(popularSongs)) as songCount
      FROM artists
      WHERE name = ?`,
@@ -426,9 +375,7 @@ app.get("/debug/artists", (req, res) => {
 // Add dummy data for testing playlists
 function insertDummyPlaylistData() {
   // Insert test users
-  playlistDb.run(
-    `INSERT OR IGNORE INTO users (id, username) VALUES (1, 'testUser')`
-  );
+  db.run(`INSERT OR IGNORE INTO users (id, username) VALUES (1, 'testUser')`);
 
   // Insert test songs
   const songQueries = [
@@ -446,11 +393,11 @@ function insertDummyPlaylistData() {
 
   // Insert test playlists
   const playlistQueries = [
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (1, 'Rock Classics', 1)`,
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (2, 'Best Hits', 1)`,
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (3, 'My Favorites', 1)`,
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (4, 'Chill Vibes', 1)`,
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (5, 'Party Mix', 1)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (1, 'Rock Classics', 2)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (2, 'Best Hits', 2)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (3, 'My Favorites', 2)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (4, 'Chill Vibes', 2)`,
+    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (5, 'Party Mix', 2)`,
   ];
 
   // Insert playlist-song relationships
@@ -485,7 +432,7 @@ function insertDummyPlaylistData() {
   // Execute all queries
   const queries = [...songQueries, ...playlistQueries, ...playlistSongQueries];
   queries.forEach((query) => {
-    playlistDb.run(query, (err) => {
+    db.run(query, (err) => {
       if (err) {
         console.error("Error inserting dummy data:", err.message);
       }
