@@ -78,15 +78,16 @@ async function enforceCacheMusicsSizeLimit() {
 // --> when adding a static file to be registered, add it here
 const STATIC_FILES = [
     '/',
-    '/index.html',
-    '/index.css',
+    './index.html',
+    './index.css',
+    './service-worker.js',
     '/index.js',
     
-    '/firstPage/firstPage.html',
-    '/firstPage/firstPage.css',
+    './firstPage/firstPage.html',
+    './firstPage/firstPage.css',
 
-    '/nextPage/nextPage.html',
-    '/nextPage/nextPage.css',
+    './nextPage/nextPage.html',
+    './nextPage/nextPage.css',
 ];
 
 
