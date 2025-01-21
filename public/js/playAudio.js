@@ -48,8 +48,10 @@ async function initializeApp() {
   }
 
   const initializeAudio = (song, musician) => {
+    console.log('ici?')
     const n = index + 1;
     audioPlayer.src = `http://localhost:8000/audio/${n}`;
+   
     cover.src = `http://localhost:8000/cover/${n}`;
     title.innerHTML = song;
     artist.innerHTML = musician;
@@ -57,6 +59,7 @@ async function initializeApp() {
       totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
     });
     audioPlayer.load();
+
   };
 
   playPauseButton.addEventListener('click', () => {
