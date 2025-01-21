@@ -1,153 +1,171 @@
 <div class="content-container p-4">
   <div id="artists-grid" class="row g-4">
-      <!-- Artists will be loaded here dynamically -->
+    <!-- Artists will be loaded here dynamically -->
   </div>
 </div>
 
 <!-- Artist Detail Modal -->
-<div class="modal fade" id="artistModal" tabindex="-1" aria-labelledby="artistModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="artistModal"
+  tabindex="-1"
+  aria-labelledby="artistModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-          <div class="modal-body p-0">
-              <!-- Artist details will be loaded here dynamically -->
-          </div>
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <!-- Artist details will be loaded here dynamically -->
       </div>
+    </div>
   </div>
 </div>
 
 <style>
+  .modal {
+    z-index: 3000; /* Ensure it is beneath the modal */
+  }
+
   .artist-card {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      text-align: center;
-      transition: all 0.3s ease;
-      border: 1px solid #e0e0e0;
-      cursor: pointer;
-      height: 100%;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    height: 100%;
   }
 
   .artist-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   }
 
   .artist-name {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: #333;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
   }
 
   .genre-badge {
-      display: inline-block;
-      padding: 5px 15px;
-      border-radius: 15px;
-      font-size: 0.9rem;
-      background: #f8f9fa;
-      color: #666;
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    background: #f8f9fa;
+    color: #666;
   }
 
   .bio-section {
-      line-height: 1.8;
-      color: #444;
-      font-size: 1.1rem;
-      margin: 20px 0;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 10px;
+    line-height: 1.8;
+    color: #444;
+    font-size: 1.1rem;
+    margin: 20px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
   }
 
   .fun-fact-section {
-      background: #fff3cd;
-      padding: 20px;
-      border-radius: 10px;
-      margin: 20px 0;
-      border-left: 4px solid #ffc107;
+    background: #fff3cd;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border-left: 4px solid #ffc107;
   }
 
   .songs-section {
-      margin: 20px 0;
+    margin: 20px 0;
   }
 
   .song-item {
-      padding: 12px 20px;
-      margin: 8px 0;
-      background: #f8f9fa;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
+    padding: 12px 20px;
+    margin: 8px 0;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
   }
 
   .song-item:hover {
-      background: #e9ecef;
-      transform: translateX(5px);
+    background: #e9ecef;
+    transform: translateX(5px);
   }
 </style>
 
 <script>
   // Define the base URL
-  const API_BASE_URL = 'http://localhost:8000';
+  const API_BASE_URL = "http://localhost:8000";
 
   // Make all functions global by attaching them to window
-  window.ensureBootstrap = function() {
-      return new Promise((resolve) => {
-          if (typeof bootstrap !== 'undefined') {
-              resolve();
-              return;
-          }
-
-          const script = document.createElement('script');
-          script.src = '/js/bootstrap.bundle.min.js';
-          script.onload = () => resolve();
-          document.head.appendChild(script);
-      });
-  };
-
-  window.loadArtists = async function() {
-      try {
-          const response = await fetch(`${API_BASE_URL}/artists`);
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const artists = await response.json();
-          window.displayArtists(artists);
-      } catch (error) {
-          console.error('Error loading artists:', error);
-          document.getElementById('artists-grid').innerHTML = 
-              '<p class="text-center">Error loading artists. Please try again.</p>';
+  window.ensureBootstrap = function () {
+    return new Promise((resolve) => {
+      if (typeof bootstrap !== "undefined") {
+        resolve();
+        return;
       }
+
+      const script = document.createElement("script");
+      script.src = "/js/bootstrap.bundle.min.js";
+      script.onload = () => resolve();
+      document.head.appendChild(script);
+    });
   };
 
-  window.displayArtists = function(artists) {
-      const grid = document.getElementById('artists-grid');
-      grid.innerHTML = artists.map(artist => `
+  window.loadArtists = async function () {
+    try {
+      const response = await fetch(`${API_BASE_URL}/artists`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const artists = await response.json();
+      window.displayArtists(artists);
+    } catch (error) {
+      console.error("Error loading artists:", error);
+      document.getElementById("artists-grid").innerHTML =
+        '<p class="text-center">Error loading artists. Please try again.</p>';
+    }
+  };
+
+  window.displayArtists = function (artists) {
+    const grid = document.getElementById("artists-grid");
+    grid.innerHTML = artists
+      .map(
+        (artist) => `
           <div class="col-md-4 col-sm-6 mb-4">
-              <div class="artist-card" onclick="showArtistDetails('${encodeURIComponent(artist.name)}')">
+              <div class="artist-card" onclick="showArtistDetails('${encodeURIComponent(
+                artist.name
+              )}')">
                   <h3 class="artist-name">${artist.name}</h3>
                   <span class="genre-badge">${artist.primaryGenre}</span>
               </div>
           </div>
-      `).join('');
+      `
+      )
+      .join("");
   };
 
-  window.showArtistDetails = async function(artistName) {
+  window.showArtistDetails = async function (artistName) {
     try {
-        await window.ensureBootstrap();
-        // Properly encode the artist name for the URL
-        const encodedName = encodeURIComponent(artistName);
-        console.log('Requesting artist:', artistName, 'Encoded:', encodedName);
-        
-        const response = await fetch(`${API_BASE_URL}/artists/${encodedName}`);
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-        }
-        const artist = await response.json();
-          
-          const modalContent = `
+      await window.ensureBootstrap();
+      // Properly encode the artist name for the URL
+      const encodedName = encodeURIComponent(artistName);
+      console.log("Requesting artist:", artistName, "Encoded:", encodedName);
+
+      const response = await fetch(`${API_BASE_URL}/artists/${encodedName}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
+      }
+      const artist = await response.json();
+
+      const modalContent = `
               <div class="container py-4">
                   <div class="row mt-3">
                       <div class="col-12 text-center">
@@ -171,28 +189,33 @@
                       <div class="col-md-6">
                           <div class="songs-section">
                               <h4 class="mb-3">Popular Songs</h4>
-                              ${artist.popularSongs.map(song => `
+                              ${artist.popularSongs
+                                .map(
+                                  (song) => `
                                   <div class="song-item">
                                       🎵 ${song}
                                   </div>
-                              `).join('')}
+                              `
+                                )
+                                .join("")}
                           </div>
                       </div>
                   </div>
               </div>`;
 
-          const modal = new bootstrap.Modal(document.getElementById('artistModal'));
-          document.querySelector('#artistModal .modal-body').innerHTML = modalContent;
-          modal.show();
-      } catch (error) {
-          console.error('Error loading artist details:', error);
-      }
+      const modal = new bootstrap.Modal(document.getElementById("artistModal"));
+      document.querySelector("#artistModal .modal-body").innerHTML =
+        modalContent;
+      modal.show();
+    } catch (error) {
+      console.error("Error loading artist details:", error);
+    }
   };
 
   // Initialize when the content is loaded
-  if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', window.loadArtists);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", window.loadArtists);
   } else {
-      window.loadArtists();
+    window.loadArtists();
   }
 </script>
