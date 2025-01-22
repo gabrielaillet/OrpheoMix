@@ -103,6 +103,7 @@
             <p class="song-duration" id="duration-${song.id}">...</p>
             <button class="add-to-playlist-btn" data-song-id="${song.id}">Add to Playlist</button>
         </div>
+        
     `).join('');
     
     songSlider.innerHTML = songsHtml;
@@ -145,15 +146,7 @@
       loadSongs(genre);
   }
 
-  function playSong(id) {
-      const audioPlayer = document.querySelector('audio');
-      if (audioPlayer) {
-          audioPlayer.src = `${API_BASE_URL}/audio/${id}`;
-          audioPlayer.play().catch(error => {
-              console.error('Error playing audio:', error);
-          });
-      }
-  }
+  
 
   // Initialize everything when the script loads
   createGenreButtons();
