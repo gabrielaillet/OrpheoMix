@@ -460,79 +460,6 @@ app.get("/debug/artists", (req, res) => {
   });
 });
 
-// Add dummy data for testing playlists
-function insertDummyPlaylistData() {
-  // Insert test users
-  db.run(`INSERT OR IGNORE INTO users (id, username) VALUES (1, 'testUser')`);
-
-  // Insert test songs
-  const songQueries = [
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (1, 'Bohemian Rhapsody', 'Queen', 354)`,
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (2, 'Hotel California', 'Eagles', 391)`,
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (3, 'Sweet Child O Mine', 'Guns N Roses', 356)`,
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (4, 'Beat It', 'Michael Jackson', 258)`,
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (5, 'Stairway to Heaven', 'Led Zeppelin', 482)`,
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (6, 'Imagine', 'John Lennon', 183)`,
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (7, 'Smells Like Teen Spirit', 'Nirvana', 301)`,
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (8, 'Wonderwall', 'Oasis', 258)`,
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (9, 'Hey Jude', 'The Beatles', 431)`,
-    `INSERT OR IGNORE INTO songs (id, title, artist, duration) VALUES (10, 'Like a Rolling Stone', 'Bob Dylan', 369)`,
-  ];
-
-  // Insert test playlists
-  const playlistQueries = [
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (1, 'Rock Classics', 2)`,
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (2, 'Best Hits', 2)`,
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (3, 'My Favorites', 2)`,
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (4, 'Chill Vibes', 2)`,
-    `INSERT OR IGNORE INTO playlists (id, title, ownerId) VALUES (5, 'Party Mix', 2)`,
-  ];
-
-  // Insert playlist-song relationships
-  const playlistSongQueries = [
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 1)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 2)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 3)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 4)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (1, 5)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 6)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 7)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 8)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 9)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (2, 10)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 1)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 3)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 5)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 7)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (3, 9)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 2)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 4)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 6)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 8)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (4, 10)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 1)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 2)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 3)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 4)`,
-    `INSERT OR IGNORE INTO playlist_songs (playlistId, songId) VALUES (5, 5)`,
-  ];
-
-  // Execute all queries
-  const queries = [...songQueries, ...playlistQueries, ...playlistSongQueries];
-  queries.forEach((query) => {
-    db.run(query, (err) => {
-      if (err) {
-        console.error("Error inserting dummy data:", err.message);
-      }
-    });
-  });
-
-  console.log("Dummy playlist data inserted successfully");
-}
-
-// Call this function after database connection
-insertDummyPlaylistData();
-
 // Endpoint to retrieve the playlists
 app.get("/playlists", (req, res) => {
   playlistDb.all(`SELECT id, title FROM playlists`, [], (err, rows) => {
@@ -569,6 +496,39 @@ app.post("/playlists/:userId/add", (req, res) => {
       res.status(200).json({ message: "Song added to playlist successfully" });
     }
   );
+});
+
+// Add this new endpoint for deleting songs
+app.delete("/songs/:id", (req, res) => {
+  const songId = req.params.id;
+
+  // Begin transaction
+  db.serialize(() => {
+    db.run("BEGIN TRANSACTION");
+
+    // First, delete the song from playlist_songs table
+    db.run("DELETE FROM playlist_songs WHERE songId = ?", [songId], (err) => {
+      if (err) {
+        console.error("Error deleting song from playlists:", err.message);
+        db.run("ROLLBACK");
+        return res
+          .status(500)
+          .json({ error: "Error deleting song from playlists" });
+      }
+
+      // Then delete the song from songs table
+      db.run("DELETE FROM songs WHERE id = ?", [songId], (err) => {
+        if (err) {
+          console.error("Error deleting song:", err.message);
+          db.run("ROLLBACK");
+          return res.status(500).json({ error: "Error deleting song" });
+        }
+
+        db.run("COMMIT");
+        res.status(200).json({ message: "Song deleted successfully" });
+      });
+    });
+  });
 });
 
 app.listen(port, () => {

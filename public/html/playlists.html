@@ -14,7 +14,7 @@
       <ul id="songsList">
         <!-- Songs will be loaded here -->
       </ul>
-      <button id="deletePlaylistButton" style="display: none;">Delete this playlist</button>
+      <button id="deletePlaylistButton" style="display: none;">Delete playlist</button>
     </div>
   </div>
 </div>
@@ -25,7 +25,7 @@
 
   async function deletePlaylist(playlistId) {
     const reallySure = confirm('Do you reaaaally want to delete this playlist ?');
-    
+
     if (reallySure) {
       try {
         const response = await fetch(`${API_BASE_URL}/playlists/${userId}/delete`, {
@@ -33,7 +33,7 @@
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ playlistId: playlistId}),
+          body: JSON.stringify({ playlistId: playlistId }),
         });
 
         if (response.ok) {
@@ -52,7 +52,7 @@
   document.getElementById('createPlaylistBtn').addEventListener('click', createPlaylist);
   async function createPlaylist() {
     const playlistTitle = prompt('Enter a name for your new playlist:');
-    
+
     if (playlistTitle) {
       try {
         const response = await fetch(`${API_BASE_URL}/playlists/${userId}`, {
@@ -60,7 +60,7 @@
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ title: playlistTitle}),
+          body: JSON.stringify({ title: playlistTitle }),
         });
 
         if (response.ok) {

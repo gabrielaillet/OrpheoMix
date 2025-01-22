@@ -1,99 +1,99 @@
 <div class="content-container">
-  <div class="genre-buttons" id="genre-buttons">
-      <!-- Genre buttons will be added dynamically -->
-  </div>
-  <div id="song-slider" class="song-slider">
-      <!-- Songs will be loaded here dynamically -->
-  </div>
+    <div class="genre-buttons" id="genre-buttons">
+        <!-- Genre buttons will be added dynamically -->
+    </div>
+    <div id="song-slider" class="song-slider">
+        <!-- Songs will be loaded here dynamically -->
+    </div>
 </div>
 
 <!-- Modale pour les playlists -->
 <div id="playlistModal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Add to Playlist</h2>
-      <ul id="playlist-list">
-        <!-- Playlists seront ajoutées dynamiquement -->
-      </ul>
+        <span class="close">&times;</span>
+        <h2>Add to Playlist</h2>
+        <ul id="playlist-list">
+            <!-- Playlists seront ajoutées dynamiquement -->
+        </ul>
     </div>
-  </div>
+</div>
 
 <script>
-  const API_BASE_URL = 'http://localhost:8000';
-  
-  function createGenreButtons() {
-      const genres = ['Mixed', 'Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop'];
-      const buttonsContainer = document.getElementById('genre-buttons');
-      
-      genres.forEach(genre => {
-          const button = document.createElement('button');
-          button.className = `genre-button ${genre === 'Mixed' ? 'active' : ''}`;
-          button.textContent = genre;
-          button.addEventListener('click', () => selectGenre(genre));
-          buttonsContainer.appendChild(button);
-      });
-  }
+    const API_BASE_URL = 'http://localhost:8000';
 
-  function formatDuration(seconds) {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = Math.floor(seconds % 60);
-      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  }
+    function createGenreButtons() {
+        const genres = ['Mixed', 'Rock', 'Pop', 'Jazz', 'Classical', 'Hip-Hop'];
+        const buttonsContainer = document.getElementById('genre-buttons');
 
-  async function getSongDuration(songId) {
-      return new Promise((resolve) => {
-          const audio = new Audio(`${API_BASE_URL}/audio/${songId}`);
-          
-          audio.addEventListener('loadedmetadata', () => {
-              resolve(formatDuration(audio.duration));
-              audio.remove(); // Clean up
-          });
-
-          audio.addEventListener('error', () => {
-              resolve('0:00'); // Return default duration on error
-              audio.remove(); // Clean up
-          });
-      });
-  }
-
-  async function loadSongs(genre = 'Mixed') {
-      try {
-          let response;
-          if (genre === 'Mixed') {
-              response = await fetch(`${API_BASE_URL}/songs`);
-          } else {
-              response = await fetch(`${API_BASE_URL}/music/${genre}`);
-          }
-          
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          const songs = await response.json();
-          await displaySongs(songs, genre);
-      } catch (error) {
-          console.error('Error loading songs:', error);
-          document.getElementById('song-slider').innerHTML = 
-              `<p>Error loading songs for ${genre}. Please try again.</p>`;
-      }
-  }
-
-  async function displaySongs(songs, currentGenre) {
-    const songSlider = document.getElementById('song-slider');
-    
-    if (!songs || (Array.isArray(songs) && songs.length === 0)) {
-        songSlider.innerHTML = `<p>No songs found for ${currentGenre}</p>`;
-        return;
+        genres.forEach(genre => {
+            const button = document.createElement('button');
+            button.className = `genre-button ${genre === 'Mixed' ? 'active' : ''}`;
+            button.textContent = genre;
+            button.addEventListener('click', () => selectGenre(genre));
+            buttonsContainer.appendChild(button);
+        });
     }
 
-    // Show loading state
-    songSlider.innerHTML = '<p>Loading songs...</p>';
+    function formatDuration(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
 
-    // Ensure songs is always an array
-    const songsArray = Array.isArray(songs) ? songs : [songs];
-    
-    // Create song elements first with loading state for duration
-    const songsHtml = songsArray.map(song => `
+    async function getSongDuration(songId) {
+        return new Promise((resolve) => {
+            const audio = new Audio(`${API_BASE_URL}/audio/${songId}`);
+
+            audio.addEventListener('loadedmetadata', () => {
+                resolve(formatDuration(audio.duration));
+                audio.remove(); // Clean up
+            });
+
+            audio.addEventListener('error', () => {
+                resolve('0:00'); // Return default duration on error
+                audio.remove(); // Clean up
+            });
+        });
+    }
+
+    async function loadSongs(genre = 'Mixed') {
+        try {
+            let response;
+            if (genre === 'Mixed') {
+                response = await fetch(`${API_BASE_URL}/songs`);
+            } else {
+                response = await fetch(`${API_BASE_URL}/music/${genre}`);
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const songs = await response.json();
+            await displaySongs(songs, genre);
+        } catch (error) {
+            console.error('Error loading songs:', error);
+            document.getElementById('song-slider').innerHTML =
+                `<p>Error loading songs for ${genre}. Please try again.</p>`;
+        }
+    }
+
+    async function displaySongs(songs, currentGenre) {
+        const songSlider = document.getElementById('song-slider');
+
+        if (!songs || (Array.isArray(songs) && songs.length === 0)) {
+            songSlider.innerHTML = `<p>No songs found for ${currentGenre}</p>`;
+            return;
+        }
+
+        // Show loading state
+        songSlider.innerHTML = '<p>Loading songs...</p>';
+
+        // Ensure songs is always an array
+        const songsArray = Array.isArray(songs) ? songs : [songs];
+
+        // Create song elements first with loading state for duration
+        const songsHtml = songsArray.map(song => `
         <div class="song" data-id="${song.id}">
             <img src="${API_BASE_URL}/cover/${song.id}" alt="Cover" class="song-cover">
             <div class="song-info">
@@ -105,141 +105,141 @@
         </div>
         
     `).join('');
-    
-    songSlider.innerHTML = songsHtml;
 
-    // Add event listeners
-    songsArray.forEach(song => {
-        const songElement = document.querySelector(`.song[data-id="${song.id}"]`);
-        const playlistButton = songElement.querySelector('.add-to-playlist-btn');
-        
-        // Play song event
-        songElement.addEventListener('click', () => playSong(song.id));
-        
-        // Add to playlist event
-        playlistButton.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent the click event from bubbling up
-            openPlaylistModal(song.id);
+        songSlider.innerHTML = songsHtml;
+
+        // Add event listeners
+        songsArray.forEach(song => {
+            const songElement = document.querySelector(`.song[data-id="${song.id}"]`);
+            const playlistButton = songElement.querySelector('.add-to-playlist-btn');
+
+            // Play song event
+            songElement.addEventListener('click', () => playSong(song.id));
+
+            // Add to playlist event
+            playlistButton.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent the click event from bubbling up
+                openPlaylistModal(song.id);
+            });
         });
-    });
 
-    // Then load durations asynchronously
-    for (const song of songsArray) {
-        const duration = await getSongDuration(song.id);
-        const durationElement = document.getElementById(`duration-${song.id}`);
-        if (durationElement) {
-            durationElement.textContent = duration;
+        // Then load durations asynchronously
+        for (const song of songsArray) {
+            const duration = await getSongDuration(song.id);
+            const durationElement = document.getElementById(`duration-${song.id}`);
+            if (durationElement) {
+                durationElement.textContent = duration;
+            }
         }
     }
-}
 
-  function selectGenre(genre) {
-      // Update active button state
-      document.querySelectorAll('.genre-button').forEach(button => {
-          button.classList.remove('active');
-          if (button.textContent === genre) {
-              button.classList.add('active');
-          }
-      });
+    function selectGenre(genre) {
+        // Update active button state
+        document.querySelectorAll('.genre-button').forEach(button => {
+            button.classList.remove('active');
+            if (button.textContent === genre) {
+                button.classList.add('active');
+            }
+        });
 
-      // Load songs for selected genre
-      loadSongs(genre);
-  }
+        // Load songs for selected genre
+        loadSongs(genre);
+    }
 
-  
 
-  // Initialize everything when the script loads
-  createGenreButtons();
-  loadSongs('Mixed');
 
-  async function loadPlaylists(songId) {
-  try {
-    const userId = localStorage.getItem("userId");
-    const response = await fetch(`${API_BASE_URL}/playlists/${userId}/playlists`);
-    const playlists = await response.json();
+    // Initialize everything when the script loads
+    createGenreButtons();
+    loadSongs('Mixed');
 
-    const playlistList = document.getElementById('playlist-list');
-    playlistList.innerHTML = playlists.map(playlist => `
+    async function loadPlaylists(songId) {
+        try {
+            const userId = localStorage.getItem("userId");
+            const response = await fetch(`${API_BASE_URL}/playlists/${userId}/playlists`);
+            const playlists = await response.json();
+
+            const playlistList = document.getElementById('playlist-list');
+            playlistList.innerHTML = playlists.map(playlist => `
       <li>
         <button onclick="addToPlaylist(${playlist.id}, ${songId})">${playlist.name}</button>
       </li>
     `).join('');
-  } catch (error) {
-    console.error('Error loading playlists:', error);
-  }
-}
-
-async function addToPlaylist(playlistId, songId) {
-  try {
-    const userId = localStorage.getItem("userId");
-    const response = await fetch(`${API_BASE_URL}/playlists/${userId}/add`, { 
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ playlistId, songId }),  // Ajout de playlistId et songId
-    });
-
-    if (response.ok) {
-      alert('Song added to playlist successfully!');
-      closePlaylistModal();
-    } else {
-      alert('The selected song already exists in this playlist');
-    }
-  } catch (error) {
-    console.error('Error adding song to playlist:', error);
-  }
-}
-
-
-async function openPlaylistModal(songId) {
-    // Récupérer les playlists de l'utilisateur (vous devez passer l'ID utilisateur ici)
-    const userId = 1;  // Remplacez par l'ID utilisateur réel
-    try {
-        const userId = localStorage.getItem("userId");
-        const response = await fetch(`${API_BASE_URL}/playlists/${userId}/playlists`);
-        const playlists = await response.json();
-        
-        // Check if the answer is a table of playlists
-        if (Array.isArray(playlists)) {
-            const playlistList = document.getElementById('playlist-list');
-            playlistList.innerHTML = '';
-
-            // add the titles to the modal page
-            playlists.forEach(playlist => {
-                const li = document.createElement('li');
-                const button = document.createElement('button');
-                button.textContent = playlist.title || 'Titre indéfini';  
-                button.onclick = () => addToPlaylist(playlist.id, songId); 
-                li.appendChild(button);
-                playlistList.appendChild(li);
-            });
-        } else {
-            console.error('playlists is not a table of playlists');
+        } catch (error) {
+            console.error('Error loading playlists:', error);
         }
-    } catch (error) {
-        console.error('Error fetching playlists', error);
     }
 
-    
-    const modal = document.getElementById('playlistModal');
-    modal.style.display = 'block';
+    async function addToPlaylist(playlistId, songId) {
+        try {
+            const userId = localStorage.getItem("userId");
+            const response = await fetch(`${API_BASE_URL}/playlists/${userId}/add`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ playlistId, songId }),  // Ajout de playlistId et songId
+            });
 
-    // Fermer la modale lorsque le bouton de fermeture est cliqué (avec addEventListener)
-    const closeModalButton = modal.querySelector('.close');
-    closeModalButton.addEventListener('click', closePlaylistModal); // Utiliser addEventListener
-}
-function closePlaylistModal() {
-    const modal = document.getElementById('playlistModal');
-    
-    // Masquer la modale
-    modal.style.display = 'none';
+            if (response.ok) {
+                alert('Song added to playlist successfully!');
+                closePlaylistModal();
+            } else {
+                alert('The selected song already exists in this playlist');
+            }
+        } catch (error) {
+            console.error('Error adding song to playlist:', error);
+        }
+    }
 
-    // Réinitialiser les variables globales
-    //selectedSongId = null;
-    //selectedPlaylistId = null;
 
-    console.log('Modal closed');
-}
+    async function openPlaylistModal(songId) {
+        // Récupérer les playlists de l'utilisateur (vous devez passer l'ID utilisateur ici)
+        const userId = 1;  // Remplacez par l'ID utilisateur réel
+        try {
+            const userId = localStorage.getItem("userId");
+            const response = await fetch(`${API_BASE_URL}/playlists/${userId}/playlists`);
+            const playlists = await response.json();
+
+            // Check if the answer is a table of playlists
+            if (Array.isArray(playlists)) {
+                const playlistList = document.getElementById('playlist-list');
+                playlistList.innerHTML = '';
+
+                // add the titles to the modal page
+                playlists.forEach(playlist => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.textContent = playlist.title || 'Titre indéfini';
+                    button.onclick = () => addToPlaylist(playlist.id, songId);
+                    li.appendChild(button);
+                    playlistList.appendChild(li);
+                });
+            } else {
+                console.error('playlists is not a table of playlists');
+            }
+        } catch (error) {
+            console.error('Error fetching playlists', error);
+        }
+
+
+        const modal = document.getElementById('playlistModal');
+        modal.style.display = 'block';
+
+        // Fermer la modale lorsque le bouton de fermeture est cliqué (avec addEventListener)
+        const closeModalButton = modal.querySelector('.close');
+        closeModalButton.addEventListener('click', closePlaylistModal); // Utiliser addEventListener
+    }
+    function closePlaylistModal() {
+        const modal = document.getElementById('playlistModal');
+
+        // Masquer la modale
+        modal.style.display = 'none';
+
+        // Réinitialiser les variables globales
+        //selectedSongId = null;
+        //selectedPlaylistId = null;
+
+        console.log('Modal closed');
+    }
 
 </script>
