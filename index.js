@@ -25,6 +25,10 @@ app.use(
 //   res.sendFile(path.join(__dirname, "public", "html", "artistes.html"));
 // });
 
+app.get("/admin", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "html", "admin.html"));
+});
+
 app.get("/main", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -70,3 +74,4 @@ app.post('/login', (req, res) => {
       res.redirect('/index.html');
   });
 });
+
