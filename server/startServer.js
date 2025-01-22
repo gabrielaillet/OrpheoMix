@@ -7,7 +7,8 @@ const app = express();
 const port = 8000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
 // Single database connection
 const db = new sqlite3.Database("db/playlistDB.sqlite", (err) => {
@@ -142,6 +143,24 @@ app.get("/music/:genre", (req, res) => {
   });
 });
 
+app.post("/addMusic", (req, res) => {
+  console.log(`Incoming request size: ${req.headers['content-length']} bytes`);
+  const { title, artist, genre,cover,song } = req.body;
+  const coverBinary = cover ? Buffer.from(cover.split(",")[1], "base64") : null;
+  const songBinary = Buffer.from(song.split(",")[1], "base64");
+
+  db.run(
+    `INSERT INTO songs (title, cover, artist, genre, audio) VALUES (?, ?, ?, ?, ?)`,
+    [title, coverBinary, artist, genre, songBinary],
+    function (err) {
+      if (err) {
+        console.error("Error inserting MP3 file:", err.message);
+      } else {
+        console.log(`MP3 file inserted with ID: ${this.lastID}`);
+      }
+    }
+  );
+});
 app.get("/audio/:trackId", (req, res) => {
   const trackId = req.params.trackId; // Récupère l'ID de la piste audio
 
@@ -533,3 +552,5 @@ app.post("/playlists/:userId/add", (req, res) => {
 app.listen(port, () => {
   console.log("Server app listening on port " + port);
 });
+
+
