@@ -7,8 +7,8 @@ const app = express();
 const port = 8000;
 
 app.use(cors());
-app.use(express.json({ limit: '100mb' }));
-app.use(express.urlencoded({ limit: '100mb', extended: true }));
+app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
 // Single database connection
 const db = new sqlite3.Database("db/playlistDB.sqlite", (err) => {
@@ -144,8 +144,8 @@ app.get("/music/:genre", (req, res) => {
 });
 
 app.post("/addMusic", (req, res) => {
-  console.log(`Incoming request size: ${req.headers['content-length']} bytes`);
-  const { title, artist, genre,cover,song } = req.body;
+  console.log(`Incoming request size: ${req.headers["content-length"]} bytes`);
+  const { title, artist, genre, cover, song } = req.body;
   const coverBinary = cover ? Buffer.from(cover.split(",")[1], "base64") : null;
   const songBinary = Buffer.from(song.split(",")[1], "base64");
 
@@ -268,17 +268,20 @@ app.get("/playlists/:userId/playlists", (req, res) => {
   });
 });
 
-
 // Get user's playlists' titles
 app.get("/playlists/:userId/playlists/title", (req, res) => {
   const userId = req.params.userId;
-  db.all(`SELECT title FROM playlists WHERE ownerId = ?`, [userId], (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: "Error fetching playlists" });
-    } else {
-      res.json(rows);
+  db.all(
+    `SELECT title FROM playlists WHERE ownerId = ?`,
+    [userId],
+    (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: "Error fetching playlists" });
+      } else {
+        res.json(rows);
+      }
     }
-  });
+  );
 });
 
 // Get playlist songs
@@ -300,38 +303,57 @@ app.get("/playlists/:playlistId", (req, res) => {
 });
 
 app.post("/playlists/:userId", (req, res) => {
-  const {title} = req.body;
+  const { title } = req.body;
   const userId = req.params.userId;
   db.run(
-    'INSERT INTO playlists (title, ownerId) VALUES (?, ?)',
-      [title, userId],
-      function (err) { 
-        if (err) {
-          console.error("Error creating playlist:", err.message);
-          return res.status(500).send("Error creating playlist.");
-        }
-        res
-          .status(201)
-          .send({ message: "Playlist created successfully", id: this.lastID });
+    "INSERT INTO playlists (title, ownerId) VALUES (?, ?)",
+    [title, userId],
+    function (err) {
+      if (err) {
+        console.error("Error creating playlist:", err.message);
+        return res.status(500).send("Error creating playlist.");
       }
-  )
-})
+      res
+        .status(201)
+        .send({ message: "Playlist created successfully", id: this.lastID });
+    }
+  );
+});
 
 app.post("/playlists/:userId/delete", (req, res) => {
   const { playlistId } = req.body;
-  db.run(
-    'DELETE FROM playlists WHERE id = ?',
-    [playlistId],
-    function (err) {
-      if (err) {
-        console.error("Error deleting playlist:", err.message);
-        return res.status(500).send("Error deleting playlist.");
+
+  // Begin transaction to ensure both operations succeed or fail together
+  db.serialize(() => {
+    db.run("BEGIN TRANSACTION");
+
+    // First delete all entries from playlist_songs
+    db.run(
+      "DELETE FROM playlist_songs WHERE playlistId = ?",
+      [playlistId],
+      (err) => {
+        if (err) {
+          console.error("Error deleting playlist songs:", err.message);
+          db.run("ROLLBACK");
+          return res.status(500).send("Error deleting playlist songs.");
+        }
+
+        // Then delete the playlist itself
+        db.run("DELETE FROM playlists WHERE id = ?", [playlistId], (err) => {
+          if (err) {
+            console.error("Error deleting playlist:", err.message);
+            db.run("ROLLBACK");
+            return res.status(500).send("Error deleting playlist.");
+          }
+
+          db.run("COMMIT");
+          res
+            .status(200)
+            .send({ message: "Playlist and its songs deleted successfully" });
+        });
       }
-      res
-        .status(200)
-        .send({ message: "Playlist deleted successfully" });
-    }
-  );
+    );
+  });
 });
 
 // First, add a new database connection for artists
@@ -511,30 +533,28 @@ function insertDummyPlaylistData() {
 // Call this function after database connection
 insertDummyPlaylistData();
 
-// Endpoint to retrieve the playlists 
+// Endpoint to retrieve the playlists
 app.get("/playlists", (req, res) => {
-  playlistDb.all(
-    `SELECT id, title FROM playlists`,
-    [],
-    (err, rows) => {
-      if (err) {
-        console.error("Database error:", err);
-        res.status(500).json({ error: "An unexpected error occurred" });
-      } else if (rows.length === 0) {
-        res.status(404).json({ message: "No playlists found" });
-      } else {
-        res.json(rows);
-      }
+  playlistDb.all(`SELECT id, title FROM playlists`, [], (err, rows) => {
+    if (err) {
+      console.error("Database error:", err);
+      res.status(500).json({ error: "An unexpected error occurred" });
+    } else if (rows.length === 0) {
+      res.status(404).json({ message: "No playlists found" });
+    } else {
+      res.json(rows);
     }
-  );
+  });
 });
 
 app.post("/playlists/:userId/add", (req, res) => {
   const userId = req.params.userId;
-  const { playlistId, songId } = req.body;  
+  const { playlistId, songId } = req.body;
 
   if (!playlistId || !songId) {
-    return res.status(400).json({ error: "Playlist ID and Song ID are required" });
+    return res
+      .status(400)
+      .json({ error: "Playlist ID and Song ID are required" });
   }
 
   db.run(
@@ -542,7 +562,9 @@ app.post("/playlists/:userId/add", (req, res) => {
     [playlistId, songId],
     function (err) {
       if (err) {
-        return res.status(409).json({ error: "The selected song already exists in this playlist" });
+        return res
+          .status(409)
+          .json({ error: "The selected song already exists in this playlist" });
       }
       res.status(200).json({ message: "Song added to playlist successfully" });
     }
@@ -552,5 +574,3 @@ app.post("/playlists/:userId/add", (req, res) => {
 app.listen(port, () => {
   console.log("Server app listening on port " + port);
 });
-
-
