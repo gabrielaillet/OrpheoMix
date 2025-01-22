@@ -45,3 +45,28 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
+
+
+app.post('/login', (req, res) => {
+  const { pseudo, password } = req.body;
+
+  if (!pseudo || !password) {
+      return res.status(400).send('Pseudo and password are required.');
+  }
+
+  const query = `SELECT * FROM users WHERE pseudo = ? AND password = ?`;
+  db.get(query, [pseudo, password], (err, row) => {
+      if (err) {
+          console.error('Error querying database:', err.message);
+          return res.status(500).send('Error logging in.');
+      }
+
+      if (!row) {
+          return res.status(401).send('Invalid pseudo or password.');
+      }
+
+      res.redirect('/index.html');
+  });
+});

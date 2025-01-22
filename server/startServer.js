@@ -533,3 +533,21 @@ app.post("/playlists/:userId/add", (req, res) => {
 app.listen(port, () => {
   console.log("Server app listening on port " + port);
 });
+
+app.post("/addMusic", (req, res) => {
+  console.log(`Incoming request size: ${req.headers['content-length']} bytes`);
+  const { title, artist, genre,cover,song } = req.body;
+
+  console.log({ title, artist, genre,cover,song })
+  db.run(
+    `INSERT INTO tracks (title, cover, artist, genre, audio) VALUES (?, ?, ?, ?, ?)`,
+    [title, cover, artist, genre, song],
+    function (err) {
+      if (err) {
+        console.error("Error inserting MP3 file:", err.message);
+      } else {
+        console.log(`MP3 file inserted with ID: ${this.lastID}`);
+      }
+    }
+  );
+});
